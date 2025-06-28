@@ -3,24 +3,46 @@
   <head>
     <meta charset="UTF-8" />
     <!-- Основная фавиконка -->
-    <link rel="icon" type="image/x-icon" href="/converter/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="/med-tools/favicon.ico" />
 
     <!-- Для современных браузеров -->
-    <link rel="icon" type="image/png" sizes="32x32" href="/converter/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/converter/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/med-tools/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/med-tools/favicon-16x16.png" />
 
     <!-- Для Apple устройств -->
-    <link rel="apple-touch-icon" sizes="180x180" href="/converter/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/med-tools/apple-touch-icon.png" />
 
     <!-- Web App Manifest -->
-    <link rel="manifest" href="/converter/site.webmanifest" />
+    <link rel="manifest" href="/med-tools/site.webmanifest" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MedTools</title>
-    <script type="module" crossorigin src="/converter/assets/index-DU9WGkdt.js"></script>
-    <link rel="stylesheet" crossorigin href="/converter/assets/index-CVBFBVN0.css">
+    <script type="module" crossorigin src="/med-tools/assets/index-DU9WGkdt.js"></script>
+    <link rel="stylesheet" crossorigin href="/med-tools/assets/index-CVBFBVN0.css">
   </head>
   <body>
     <div id="root"></div>
+    <script type="text/javascript">
+      // Single Page Apps for GitHub Pages
+      // MIT License
+      // https://github.com/rafgraph/spa-github-pages
+      // This script checks to see if a redirect is present in the query string,
+      // converts it back into the correct url and adds it to the
+      // browser's history using window.history.replaceState(...),
+      // which won't cause the browser to attempt to load the new url.
+      // When the single page app is loaded further down in this file,
+      // the correct url will be waiting in the browser's history for
+      // the single page app to route accordingly.
+      (function(l) {
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('&').map(function(s) {
+            return s.replace(/~and~/g, '&')
+          }).join('?');
+          window.history.replaceState(null, null,
+              l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      }(window.location))
+    </script>
   </body>
 </html>
