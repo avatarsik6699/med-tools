@@ -3,7 +3,7 @@ import { type FC } from "react";
 
 type Props = Pick<PolymorphicComponentProps<"p", TextProps>, "children"> & {};
 
-const LinkDescription: FC<Props> = ({ children, ...props }) => {
+const LinkDescription: FC<Props> = ({ children }) => {
   return (
     <Text mb="xs" lineClamp={1} size="xs" c="dimmed">
       {children}
