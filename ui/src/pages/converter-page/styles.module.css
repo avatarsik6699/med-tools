@@ -1,0 +1,7 @@
+.root {
+  flex-wrap: nowrap;
+
+  @media (max-width: 1100px) {
+      flex-wrap: wrap;
+  }
+}

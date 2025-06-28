@@ -1,14 +1,14 @@
-import { Alert, Group, noop, rem, Stack, Text } from "@mantine/core";
+import { Group, noop, rem, Stack } from "@mantine/core";
 import { useMemo, type FC } from "react";
 import { AiOutlineSwap } from "react-icons/ai";
 import { useSelectState } from "../../shared/hooks/use-select-state";
 import IconWrapper from "../../shared/ui/icon-wrapper";
 import SubstancesSelect from "./ui/substances-select";
+import { substances } from "./ui/substances-select/data";
 import UnitField from "./ui/unit-field";
 import { convertMmolToUnit, convertUnitToMmol } from "./ui/unit-field/model/convert-unit";
 import { useUnitFieldState } from "./ui/unit-field/model/use-unit-field-state";
-import { TbInfoCircle } from "react-icons/tb";
-import { substances } from "./ui/substances-select/data";
+import cn from "./styles.module.css";
 
 const ConverterPage: FC = () => {
   const substance = useSelectState();
@@ -36,7 +36,7 @@ const ConverterPage: FC = () => {
   }, [fromUnit, substance.value, toUnit.value]);
 
   return (
-    <Group w="100%" align="flex-start" wrap="nowrap">
+    <Group w="100%" align="flex-start" className={cn.root}>
       <Stack miw={450}>
         <SubstancesSelect state={substance} />
         <Group wrap="nowrap" align="center">
