@@ -1,0 +1,7 @@
+.dropdown {
+  will-change: contents, width, height, opacity, transform !important;
+  transition-property: transform, opacity, width, height !important;
+  transition-duration: 300ms !important;
+  transition-timing-function: ease !important;
+
+}

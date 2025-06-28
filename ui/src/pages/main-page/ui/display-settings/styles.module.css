@@ -1,0 +1,10 @@
+.dropdown {
+  max-width: calc(15rem * var(--mantine-scale));
+}
+
+.menu_item {
+  cursor: initial;
+  &:hover {
+    background: inherit;
+  }
+}

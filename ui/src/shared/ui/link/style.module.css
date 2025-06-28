@@ -1,0 +1,27 @@
+.root {
+  width: fit-content;
+  color: var(--mantine-color-blue-5);
+  text-decoration: none;
+  position: relative;
+
+  &:hover {
+    background: transparent;
+    color: var(--mantine-color-blue-7);
+
+    text-decoration: underline;
+    text-decoration-color: var(--mantine-color-blue-1);
+    text-underline-offset: 0.2rem;
+  }
+
+  &[data-active] {
+    background-color: transparent;
+  }
+}
+
+.body {
+  flex: unset;
+}
+
+.label {
+  font-size: var(--mantine-font-size-lg);
+}

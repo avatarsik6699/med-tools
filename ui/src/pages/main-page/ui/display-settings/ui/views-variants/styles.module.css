@@ -1,0 +1,22 @@
+  .root {
+    background: inherit;
+    gap: var(--mantine-spacing-xs);
+    padding: 0;
+  }
+
+  .indicator {
+    display: none;
+  }
+
+  .item {
+    border-radius: var(--mantine-radius-md);
+    height: calc(4rem * var(--mantine-scale));
+    &:hover {
+      background: var(--mantine-color-gray-1);
+    }
+
+    &[data-active="true"] {
+      border: 1px solid var(--mantine-color-gray-4);
+      background: var(--mantine-color-gray-1);
+    }
+  }

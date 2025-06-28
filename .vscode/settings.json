@@ -1,0 +1,9 @@
+{
+  "cssVariables.lookupFiles": [
+    "ui/**/*.css",
+    "ui/**/*.scss",
+    "ui/**/*.sass",
+    "ui/**/*.less",
+    "ui/node_modules/@mantine/core/styles.css"
+  ]
+}
