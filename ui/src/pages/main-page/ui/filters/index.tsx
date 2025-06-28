@@ -1,16 +1,15 @@
 import { Box, Button, Combobox, Flex, Group, Kbd, rem, Text, useCombobox } from "@mantine/core";
 import { useElementSize } from "@mantine/hooks";
-import { Children, useMemo, type FC } from "react";
-import { LuListFilter, LuSearch } from "react-icons/lu";
+import { useMemo, type FC } from "react";
+import { LuChevronRight, LuListFilter, LuSearch } from "react-icons/lu";
 import { useSearchState } from "../../../../shared/hooks/use-search-state";
 import { useAnimation } from "../../../../shared/hooks/useAnimation";
 import { useStack } from "../../../../shared/hooks/useSack";
 import Chevrone from "../../../../shared/ui/enhanced-icons/chevron";
 import { useKeyboard } from "./model/useKeyboard";
+import { useSearchParams } from "./model/useSearchParams";
 import cn from "./styles.module.css";
 import type { FiltersTypes } from "./types";
-import { useSearchParams } from "./model/useSearchParams";
-import { LuChevronRight } from "react-icons/lu";
 
 declare module "@mantine/core" {
   interface ComboboxOptionProps {
@@ -79,7 +78,7 @@ const Filters: FC<Props> = (props) => {
       pages.pop();
     },
   });
-  console.log(sp.state)
+  console.log(sp.state);
   const JSXOptions = useMemo(() => {
     const items = pages.isInitialPage ? props.items : pages.last().children;
 
@@ -88,10 +87,12 @@ const Filters: FC<Props> = (props) => {
       .map((item) => {
         let isSelected = false;
         let selectedCount = 0;
-        console.log(sp)
+        console.log(sp);
         if (pages.isInitialPage) {
           if (item.id in sp.state) {
             if (item.children) {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-expect-error
               selectedCount = (sp.state[item.id as keyof FiltersTypes.State] as string[]).length;
             } else {
               isSelected = true;
@@ -99,8 +100,10 @@ const Filters: FC<Props> = (props) => {
           }
         } else {
           const parent = pages.last();
-          console.log(sp.state, item.value)
+          console.log(sp.state, item.value);
           if (parent.id in sp.state) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             isSelected = (sp.state[parent.id as keyof FiltersTypes.State] as string[]).includes(item.value);
           }
         }
