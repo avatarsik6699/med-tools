@@ -3,7 +3,7 @@ import { type FC } from "react";
 import { useSearchState } from "@/shared/hooks/use-search-state";
 import { LuSearch } from "react-icons/lu";
 
-const SearchBySlug: FC = () => {
+const SearchByTools: FC = () => {
   const search = useSearchState();
 
   return (
@@ -12,9 +12,9 @@ const SearchBySlug: FC = () => {
       value={search.value}
       miw={240}
       onChange={(e) => search.set(e.currentTarget.value)}
-      placeholder="Введите название ссылки..."
+      placeholder="Введите название..."
     />
   );
 };
 
-export default SearchBySlug;
+export default SearchByTools;

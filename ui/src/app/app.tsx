@@ -2,19 +2,37 @@ import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import "../shared/styles/animations.css";
 
-import { AppShell, MantineProvider, rem } from "@mantine/core";
+import { AppShell, Burger, MantineProvider } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import Header from "./header/header";
+import type { FC } from "react";
+import Header from "./header";
+import NavBar from "./nav-bar";
 import { overrideTheme } from "./theme";
 
-const App = () => {
+const App: FC = () => {
+  const [isMobile, { toggle: toggleMobile }] = useDisclosure();
+  const [isDesktop, { toggle: toggleDesktop }] = useDisclosure(true);
+
   return (
     <MantineProvider theme={overrideTheme}>
-      <AppShell>
-        <Header />
+      <AppShell
+        padding="md"
+        header={{ height: 60 }}
+        navbar={{ width: 300, breakpoint: "sm", collapsed: { mobile: !isMobile, desktop: !isDesktop } }}>
+        <Header
+          Burger={
+            <>
+              <Burger lineSize={0.5} opened={isMobile} onClick={toggleMobile} hiddenFrom="sm" size="sm" />
+              <Burger lineSize={0.5} opened={isDesktop} onClick={toggleDesktop} visibleFrom="sm" size="sm" />
+            </>
+          }
+        />
 
-        <AppShell.Main pt={`calc(${rem(60)} + var(--mantine-spacing-xl))`}>
+        <NavBar />
+
+        <AppShell.Main>
           <Outlet />
           <TanStackRouterDevtools />
         </AppShell.Main>

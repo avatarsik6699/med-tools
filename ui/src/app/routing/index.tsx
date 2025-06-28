@@ -2,6 +2,7 @@ import { createRoute, createRouter, Link, Outlet } from "@tanstack/react-router"
 import { z } from "zod";
 import { mainRoute } from "./routes/main/route";
 import { rootRoute } from "./routes/root/route";
+import { converterRoute } from "./routes/converter/route";
 
 const productSearchSchema = z.object({
   page: z.number().default(1),
@@ -69,7 +70,12 @@ const settingsRoute = createRoute({
 });
 
 export const router = createRouter({
-  routeTree: rootRoute.addChildren([mainRoute, aboutPage, protectedRoute.addChildren([profileRoute, settingsRoute])]),
+  routeTree: rootRoute.addChildren([
+    converterRoute,
+    mainRoute,
+    aboutPage,
+    protectedRoute.addChildren([profileRoute, settingsRoute]),
+  ]),
 });
 
 declare module "@tanstack/react-router" {

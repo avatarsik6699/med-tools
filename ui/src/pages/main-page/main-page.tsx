@@ -1,12 +1,11 @@
-import { Box, Container, Divider, Grid, Group, rem } from "@mantine/core";
-import type { FC } from "react";
-import LinkCard from "./ui/link-card";
+import { Container, Divider, Grid, Group } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import LinkEditor from "./ui/link-editor";
+import type { FC } from "react";
 import CreateLinkButton from "./ui/create-link-button";
 import DisplaySettings from "./ui/display-settings/display-settings";
 import Filters, { type FiltersProps } from "./ui/filters";
-import { Link } from "@tanstack/react-router";
+import LinkCard from "./ui/link-card";
+import LinkEditor from "./ui/link-editor";
 import SearchBySlug from "./ui/search-by-slug";
 
 const links = Array.from({ length: 10 }).map(() => {

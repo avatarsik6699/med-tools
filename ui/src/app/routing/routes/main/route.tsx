@@ -6,6 +6,6 @@ import MainPage from "../../../../pages/main-page/main-page";
 export const mainRoute = createRoute({
   getParentRoute: () => rootRoute,
   validateSearch: searchParams,
-  path: "/",
+  path: "/123",
   component: MainPage,
 });
