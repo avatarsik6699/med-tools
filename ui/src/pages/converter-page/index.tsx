@@ -3,9 +3,9 @@ import { type FC } from "react";
 import { AiOutlineSwap } from "react-icons/ai";
 import { useSelectState } from "../../shared/hooks/use-select-state";
 import IconWrapper from "../../shared/ui/icon-wrapper";
-import SubstancesSelect from "./ui/substances-select";
 import cn from "./styles.module.css";
-import { Substances } from "./ui/substances-select/model/data";
+import { Substances } from "./ui/substance/model/data";
+import SubstancesSelect from "./ui/substance/ui/substances-select";
 import UnitField from "./ui/unit-field";
 import { useToUnitFromMmol } from "./ui/unit-field/model/use-to-unit-from-mmol";
 import { useUnitFieldState } from "./ui/unit-field/model/use-unit-field-state";
@@ -20,8 +20,8 @@ const ConverterPage: FC = () => {
 
   return (
     <Container size="xl">
-      <Group className={cn.root}>
-        <Stack w="100%" className={cn.units}>
+      <Group mb="xs">
+        <Stack className={cn.units}>
           <SubstancesSelect state={selectedSubstanceState} />
 
           <Group wrap="nowrap">
@@ -40,11 +40,11 @@ const ConverterPage: FC = () => {
           </Group>
         </Stack>
 
-        {selectedSubstanceState.value !== null && (
-          <Group w="100%">
-            {Substances.get(selectedSubstanceState.value)!.Description}
-          </Group>
-        )}
+        <Group w="100%" align="stretch" className={cn.info_sections}>
+          {selectedSubstanceState.value !== null && (
+            <>{Substances.get(selectedSubstanceState.value)!.InfoSections}</>
+          )}
+        </Group>
       </Group>
     </Container>
   );

@@ -6,7 +6,7 @@ import type { UseUnitFieldState } from "./use-unit-field-state";
 import { noop } from "@mantine/core";
 import { useMemo } from "react";
 import { convertMmolToUnit, convertUnitToMmol } from "./convert-unit";
-import { Substances } from "../../substances-select/model/data";
+import { Substances } from "../../substance/model/data";
 
 type Params = {
   selectedSubstanceState: UseSelectState;

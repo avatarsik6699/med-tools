@@ -1,7 +1,7 @@
 import type { UseSelectState } from "@/shared/hooks/use-select-state";
 import { Select } from "@mantine/core";
 import { useMemo, type FC } from "react";
-import { Substances } from "./model/data";
+import { Substances } from "../model/data";
 
 type Props = {
   state: UseSelectState;
