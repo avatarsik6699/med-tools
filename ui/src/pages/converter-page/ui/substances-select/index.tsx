@@ -13,6 +13,7 @@ const SubstancesSelect: FC<Props> = ({ state }) => {
       {...state}
       maw={rem(432)}
       searchable
+      autoFocus={false}
       maxDropdownHeight={200}
       comboboxProps={{ transitionProps: { transition: "pop", duration: 200 } }}
       clearable

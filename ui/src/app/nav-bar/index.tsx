@@ -5,7 +5,15 @@ import { TbTransform } from "react-icons/tb";
 import cn from "./styles.module.css";
 import SearchByTools from "./ui/search-by-tools";
 
-const NavBar: FC = () => {
+type Props = {
+  onItemClick: () => void;
+};
+
+const NavBar: FC<Props> = (props) => {
+  const onItemClick = () => {
+    props.onItemClick();
+  };
+
   return (
     <AppShell.Navbar p="md">
       <AppShell.Section mb="xs">
@@ -13,7 +21,7 @@ const NavBar: FC = () => {
       </AppShell.Section>
       <AppShell.Section grow component={ScrollArea}>
         <Group>
-          <RouterLink className={cn.navbar_link} to="/">
+          <RouterLink onClick={onItemClick} className={cn.navbar_link} to="/">
             <TbTransform size={16} /> Конвертер
           </RouterLink>
         </Group>

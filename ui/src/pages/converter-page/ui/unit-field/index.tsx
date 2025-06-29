@@ -13,6 +13,7 @@ const UnitField: FC<Props> = ({ state, readOnly = false }) => {
     <Stack gap={4}>
       <Select
         {...state.select}
+        autoFocus={false}
         size="xs"
         variant="filled"
         placeholder="ед. изм."
@@ -21,6 +22,7 @@ const UnitField: FC<Props> = ({ state, readOnly = false }) => {
       />
       <NumberInput
         {...state.input}
+        autoFocus={false}
         readOnly={readOnly}
         disabled={state.select.value === null}
         placeholder="Введите значение..."

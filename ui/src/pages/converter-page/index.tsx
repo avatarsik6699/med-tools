@@ -37,7 +37,7 @@ const ConverterPage: FC = () => {
 
   return (
     <Group w="100%" align="flex-start" className={cn.root}>
-      <Stack miw={450}>
+      <Stack w="fit-content" miw={320} maw="45%">
         <SubstancesSelect state={substance} />
         <Group wrap="nowrap" align="center">
           <UnitField state={fromUnit} />
@@ -62,8 +62,10 @@ const ConverterPage: FC = () => {
           />
         </Group>
       </Stack>
+      <Group maw="55%">
+        {substance.value && substances.find((item) => item.value === substance.value)?.description}
+      </Group>
       {/* TODO: переделать на нормальный поиск с использованием id */}
-      {substance.value && substances.find((item) => item.value === substance.value)?.description}
     </Group>
   );
 };

@@ -5,7 +5,6 @@ import "../shared/styles/animations.css";
 import { AppShell, Burger, MantineProvider } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Outlet } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import type { FC } from "react";
 import Header from "./header";
 import NavBar from "./nav-bar";
@@ -30,11 +29,19 @@ const App: FC = () => {
           }
         />
 
-        <NavBar />
+        <NavBar
+          onItemClick={() => {
+            if (isMobile) {
+              toggleMobile();
+            } else {
+              toggleDesktop();
+            }
+          }}
+        />
 
         <AppShell.Main>
           <Outlet />
-          <TanStackRouterDevtools />
+          {/* <TanStackRouterDevtools /> */}
         </AppShell.Main>
       </AppShell>
     </MantineProvider>
