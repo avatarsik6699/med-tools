@@ -6,7 +6,7 @@ export const useSelectState = () => {
   return {
     value,
     onChange: setValue
-  }
+}
 }
 
 export type UseSelectState = ReturnType<typeof useSelectState>

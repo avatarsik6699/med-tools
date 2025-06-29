@@ -1,72 +1,52 @@
-import { Group, noop, rem, Stack } from "@mantine/core";
-import { useMemo, type FC } from "react";
+import { Container, Group, Stack } from "@mantine/core";
+import { type FC } from "react";
 import { AiOutlineSwap } from "react-icons/ai";
 import { useSelectState } from "../../shared/hooks/use-select-state";
 import IconWrapper from "../../shared/ui/icon-wrapper";
 import SubstancesSelect from "./ui/substances-select";
-// import { substances } from "./ui/substances-select/data";
-import UnitField from "./ui/unit-field";
-import { convertMmolToUnit, convertUnitToMmol } from "./ui/unit-field/model/convert-unit";
-import { useUnitFieldState } from "./ui/unit-field/model/use-unit-field-state";
 import cn from "./styles.module.css";
+import { Substances } from "./ui/substances-select/model/data";
+import UnitField from "./ui/unit-field";
+import { useToUnitFromMmol } from "./ui/unit-field/model/use-to-unit-from-mmol";
+import { useUnitFieldState } from "./ui/unit-field/model/use-unit-field-state";
 
 const ConverterPage: FC = () => {
-  const substance = useSelectState();
-  const fromUnit = useUnitFieldState();
-  const toUnit = useSelectState();
-
-  const toUnitValue = useMemo(() => {
-    const { input, select } = fromUnit;
-
-    if (select.value && input.value && substance.value && toUnit.value) {
-      const mmol = convertUnitToMmol({
-        unit: select.value,
-        value: +input.value,
-        molarMass: +substance.value,
-      });
-
-      return convertMmolToUnit({
-        unit: toUnit.value,
-        value: mmol,
-        molarMass: +substance.value,
-      });
-    }
-
-    return undefined;
-  }, [fromUnit, substance.value, toUnit.value]);
+  const selectedSubstanceState = useSelectState();
+  const fromUnitFieldState = useUnitFieldState();
+  const toUnitFieldState = useToUnitFromMmol({
+    selectedSubstanceState,
+    fromUnitFieldState,
+  });
 
   return (
-    <Group w="100%" align="flex-start" className={cn.root}>
-      <Stack w="fit-content" miw={320} maw="100%">
-        <SubstancesSelect state={substance} />
-        <Group wrap="nowrap" align="center">
-          <UnitField state={fromUnit} />
-          <IconWrapper
-            styles={{
-              root: {
-                paddingTop: rem(42),
-              },
-            }}
-            color="dark.4">
-            <AiOutlineSwap size={24} />
-          </IconWrapper>
-          <UnitField
-            readOnly
-            state={{
-              select: toUnit,
-              input: {
-                value: toUnitValue,
-                onChange: noop,
-              },
-            }}
-          />
-        </Group>
-      </Stack>
-      <Group maw="55%">
-        {/* {substance.value && substances.find((item) => item.value === substance.value)?.description} */}
+    <Container size="xl">
+      <Group className={cn.root}>
+        <Stack w="100%" className={cn.units}>
+          <SubstancesSelect state={selectedSubstanceState} />
+
+          <Group wrap="nowrap">
+            <UnitField
+              isDisabled={selectedSubstanceState.value === null}
+              state={fromUnitFieldState}
+            />
+            <IconWrapper color="dark.4" pt={42}>
+              <AiOutlineSwap size={24} />
+            </IconWrapper>
+            <UnitField
+              readOnly
+              isDisabled={selectedSubstanceState.value === null}
+              state={toUnitFieldState}
+            />
+          </Group>
+        </Stack>
+
+        {selectedSubstanceState.value !== null && (
+          <Group w="100%">
+            {Substances.get(selectedSubstanceState.value)!.Description}
+          </Group>
+        )}
       </Group>
-      {/* TODO: переделать на нормальный поиск с использованием id */}
-    </Group>
+    </Container>
   );
 };
 

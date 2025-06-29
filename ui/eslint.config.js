@@ -20,6 +20,7 @@ export default tseslint.config(
     rules: {
       ...reactHooks.configs.recommended.rules,
       '@typescript-eslint/no-namespace': 'off',
+      'max-len': ['error', { code: 80 }], // ограничение 80 символов
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },

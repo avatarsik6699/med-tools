@@ -19,12 +19,29 @@ const App: FC = () => {
       <AppShell
         padding="md"
         header={{ height: 60 }}
-        navbar={{ width: 300, breakpoint: "sm", collapsed: { mobile: !isMobile, desktop: !isDesktop } }}>
+        navbar={{
+          width: 300,
+          breakpoint: "sm",
+          collapsed: { mobile: !isMobile, desktop: !isDesktop },
+        }}
+      >
         <Header
           Burger={
             <>
-              <Burger lineSize={0.5} opened={isMobile} onClick={toggleMobile} hiddenFrom="sm" size="sm" />
-              <Burger lineSize={0.5} opened={isDesktop} onClick={toggleDesktop} visibleFrom="sm" size="sm" />
+              <Burger
+                lineSize={0.5}
+                opened={isMobile}
+                onClick={toggleMobile}
+                hiddenFrom="sm"
+                size="sm"
+              />
+              <Burger
+                lineSize={0.5}
+                opened={isDesktop}
+                onClick={toggleDesktop}
+                visibleFrom="sm"
+                size="sm"
+              />
             </>
           }
         />

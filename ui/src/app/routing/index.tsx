@@ -1,4 +1,9 @@
-import { createRoute, createRouter, Link, Outlet } from "@tanstack/react-router";
+import {
+  createRoute,
+  createRouter,
+  Link,
+  Outlet,
+} from "@tanstack/react-router";
 import { z } from "zod";
 import { mainRoute } from "./routes/main/route";
 import { rootRoute } from "./routes/root/route";
@@ -33,7 +38,15 @@ const protectedRoute = createRoute({
   component: function ProtectedLayout() {
     return (
       <div>
-        <div style={{ padding: "0.5rem", backgroundColor: "#e3f2fd", marginBottom: "1rem" }}>🔒 Защищенная область</div>
+        <div
+          style={{
+            padding: "0.5rem",
+            backgroundColor: "#e3f2fd",
+            marginBottom: "1rem",
+          }}
+        >
+          🔒 Защищенная область
+        </div>
         <Link to="/about">go to about</Link>
         <Outlet />
       </div>
@@ -71,7 +84,7 @@ const settingsRoute = createRoute({
 
 export const router = createRouter({
   // Добавляем base URL для GitHub Pages
-  basepath: import.meta.env.PROD ? '/med-tools' : '',
+  basepath: import.meta.env.PROD ? "/med-tools" : "",
   routeTree: rootRoute.addChildren([
     converterRoute,
     mainRoute,

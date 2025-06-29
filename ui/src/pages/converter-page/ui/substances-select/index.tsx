@@ -1,7 +1,7 @@
 import type { UseSelectState } from "@/shared/hooks/use-select-state";
 import { Select } from "@mantine/core";
-import { type FC } from "react";
-import { substances } from "./data";
+import { useMemo, type FC } from "react";
+import { Substances } from "./model/data";
 
 type Props = {
   state: UseSelectState;
@@ -18,8 +18,15 @@ const SubstancesSelect: FC<Props> = ({ state }) => {
       clearable
       label="Выберите вещество:"
       placeholder="Вещество..."
-      nothingFoundMessage="Nothing found..."
-      data={substances}
+      nothingFoundMessage="Ничего не найдено"
+      data={useMemo(
+        () =>
+          Array.from(Substances.entries()).map(([id, substance]) => ({
+            value: id,
+            label: substance.label,
+          })),
+        []
+      )}
     />
   );
 };

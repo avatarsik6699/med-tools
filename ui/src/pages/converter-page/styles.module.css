@@ -1,7 +1,31 @@
 .root {
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
+  align-items: flex-start;
 
-  @media (max-width: 1100px) {
-      flex-wrap: wrap;
+  @media (min-width: $mantine-breakpoint-md) {
+    flex-wrap: nowrap;
+
+    & > *:first-child {
+      max-width: 55%;
+    }
+
+    & > *:last-child {
+      max-width: 45%;
+    }
+    /* background-color: red; */
+
+    /* & > *:first-child {
+        background-color: red;
+        width: 100% !important;
+        max-width: unset !important;
+      } */
   }
+}
+
+.units {
+  width: 100%;
+
+  /* @media (min-width: $mantine-breakpoint-md) {
+    width: 55%;
+  } */
 }
