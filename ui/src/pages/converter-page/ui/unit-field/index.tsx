@@ -26,7 +26,6 @@ const UnitField: FC<Props> = ({ state, readOnly = false }) => {
         autoFocus={false}
         readOnly={readOnly}
         disabled={state.select.value === null}
-        placeholder="Введите значение..."
         variant="default"
         decimalSeparator=","
         thousandSeparator=" "

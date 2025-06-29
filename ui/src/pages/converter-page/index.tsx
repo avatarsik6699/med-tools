@@ -37,7 +37,7 @@ const ConverterPage: FC = () => {
 
   return (
     <Group w="100%" align="flex-start" className={cn.root}>
-      <Stack w="fit-content" miw={320} maw="45%">
+      <Stack w="fit-content" miw={320} maw="100%">
         <SubstancesSelect state={substance} />
         <Group wrap="nowrap" align="center">
           <UnitField state={fromUnit} />
