@@ -4,7 +4,7 @@ import { AiOutlineSwap } from "react-icons/ai";
 import { useSelectState } from "../../shared/hooks/use-select-state";
 import IconWrapper from "../../shared/ui/icon-wrapper";
 import SubstancesSelect from "./ui/substances-select";
-import { substances } from "./ui/substances-select/data";
+// import { substances } from "./ui/substances-select/data";
 import UnitField from "./ui/unit-field";
 import { convertMmolToUnit, convertUnitToMmol } from "./ui/unit-field/model/convert-unit";
 import { useUnitFieldState } from "./ui/unit-field/model/use-unit-field-state";
@@ -44,11 +44,11 @@ const ConverterPage: FC = () => {
           <IconWrapper
             styles={{
               root: {
-                paddingTop: rem(32),
+                paddingTop: rem(42),
               },
             }}
             color="dark.4">
-            <AiOutlineSwap size={18} />
+            <AiOutlineSwap size={24} />
           </IconWrapper>
           <UnitField
             readOnly
@@ -63,7 +63,7 @@ const ConverterPage: FC = () => {
         </Group>
       </Stack>
       <Group maw="55%">
-        {substance.value && substances.find((item) => item.value === substance.value)?.description}
+        {/* {substance.value && substances.find((item) => item.value === substance.value)?.description} */}
       </Group>
       {/* TODO: переделать на нормальный поиск с использованием id */}
     </Group>

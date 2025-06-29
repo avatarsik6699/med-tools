@@ -14,7 +14,7 @@ const UnitField: FC<Props> = ({ state, readOnly = false }) => {
       <Select
         {...state.select}
         autoFocus={false}
-        size="xs"
+        size="md"
         variant="filled"
         placeholder="ед. изм."
         rightSectionWidth={21}
@@ -22,6 +22,7 @@ const UnitField: FC<Props> = ({ state, readOnly = false }) => {
       />
       <NumberInput
         {...state.input}
+        size="lg"
         autoFocus={false}
         readOnly={readOnly}
         disabled={state.select.value === null}
