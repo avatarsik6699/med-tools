@@ -70,6 +70,8 @@ const settingsRoute = createRoute({
 });
 
 export const router = createRouter({
+  // Добавляем base URL для GitHub Pages
+  basepath: import.meta.env.PROD ? '/med-tools' : '',
   routeTree: rootRoute.addChildren([
     converterRoute,
     mainRoute,
