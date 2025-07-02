@@ -1,19 +1,20 @@
-.units {
+.units-fields-wrapper {
+  flex-wrap: wrap;
+  flex-direction: column;
   width: 100%;
+  gap: var(--mantine-spacing-xs);
 
-  @media (min-width: $mantine-breakpoint-md) {
-    max-width: 45%;
-  }
-}
-
-.info_sections {
-  & > * {
-    width: 100%;
+  & > :global(.mantine-ThemeIcon-root) {
+    transform: rotate(90deg);
   }
 
+
   @media (min-width: $mantine-breakpoint-md) {
-    & > * {
-      max-width: 45%;
+    flex-wrap: nowrap;
+    flex-direction: row;
+
+    & > :global(.mantine-ThemeIcon-root) {
+      transform: unset;
     }
   }
 }

@@ -1,47 +1,67 @@
-import { NumberInput, Select, Stack } from "@mantine/core";
+import {
+	NumberInput,
+	rem,
+	Select,
+	type NumberInputProps,
+	type SelectProps,
+} from "@mantine/core";
 import { type FC } from "react";
-import type { UseUnitFieldState } from "./model/use-unit-field-state";
 import { Units } from "./model/data";
 
 type Props = {
-  state: UseUnitFieldState;
-  readOnly?: boolean;
-  isDisabled?: boolean;
+	select?: SelectProps;
+	input?: NumberInputProps;
 };
 
-const UnitField: FC<Props> = ({
-  state,
-  isDisabled = false,
-  readOnly = false,
-}) => {
-  return (
-    <Stack flex={1} gap={4}>
-      <Select
-        {...state.select}
-        autoFocus={false}
-        size="md"
-        variant="filled"
-        placeholder="ед. изм."
-        rightSectionWidth={21}
-        data={Units}
-      />
-      <NumberInput
-        {...state.input}
-        size="lg"
-        min={0}
-        autoFocus={false}
-        readOnly={readOnly}
-        disabled={state.select.value === null || isDisabled}
-        variant="default"
-        decimalScale={4}
-        decimalSeparator=","
-        thousandSeparator=" "
-        allowNegative={false}
-        stepHoldDelay={500}
-        stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
-      />
-    </Stack>
-  );
+const UnitField: FC<Props> = (props) => {
+	return (
+		<NumberInput
+			{...props.input}
+			w="100%"
+			flex={1}
+			miw={200}
+			rightSectionWidth={110}
+			rightSectionProps={{
+				style: { paddingLeft: 4 },
+			}}
+			rightSection={
+				<Select
+					{...props.select}
+					autoFocus={false}
+					rightSectionWidth={20}
+					comboboxProps={{
+						width: "max-content",
+					}}
+					styles={{
+						root: {
+							marginRight: rem(5),
+						},
+						input: {
+							height: "var(--input-height-sm)",
+							minHeight: "var(--input-height-sm)",
+							paddingRight: rem(5),
+							paddingLeft: rem(5),
+						},
+					}}
+					size="md"
+					placeholder="ед. изм."
+					data={Units}
+					clearable={false}
+					allowDeselect={false}
+				/>
+			}
+			size="lg"
+			min={0}
+			autoFocus={false}
+			variant="default"
+			decimalScale={4}
+			decimalSeparator=","
+			thousandSeparator=" "
+			allowNegative={false}
+			stepHoldDelay={500}
+			stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
+		/>
+	);
 };
 
 export default UnitField;

@@ -1,53 +1,79 @@
-import { Container, Group, Stack } from "@mantine/core";
+import { Container, Grid, Group, Stack } from "@mantine/core";
 import { type FC } from "react";
 import { AiOutlineSwap } from "react-icons/ai";
-import { useSelectState } from "../../shared/hooks/use-select-state";
+import {
+	useSelectState,
+	type UseSelectStateTypes,
+} from "../../shared/hooks/use-select-state";
 import IconWrapper from "../../shared/ui/icon-wrapper";
+import { useFromToUnitsState } from "./model/use-from-to-units-state";
 import cn from "./styles.module.css";
 import { Substances } from "./ui/substance/model/data";
 import SubstancesSelect from "./ui/substance/ui/substances-select";
 import UnitField from "./ui/unit-field";
-import { useToUnitFromMmol } from "./ui/unit-field/model/use-to-unit-from-mmol";
-import { useUnitFieldState } from "./ui/unit-field/model/use-unit-field-state";
+import { Text } from "@mantine/core";
 
 const ConverterPage: FC = () => {
-  const selectedSubstanceState = useSelectState();
-  const fromUnitFieldState = useUnitFieldState();
-  const toUnitFieldState = useToUnitFromMmol({
-    selectedSubstanceState,
-    fromUnitFieldState,
-  });
+	const selectedSubstanceState = useSelectState({
+		initialValue: "litium",
+	});
 
-  return (
-    <Container size="xl">
-      <Group mb="xs">
-        <Stack className={cn.units}>
-          <SubstancesSelect state={selectedSubstanceState} />
+	return (
+		<Container size="xl">
+			<Grid gutter={{ base: "md" }}>
+				<Grid.Col pt={24} span={{ base: 12, sm: 6 }}>
+					<Stack>
+						<SubstancesSelect state={selectedSubstanceState} />
 
-          <Group wrap="nowrap">
-            <UnitField
-              isDisabled={selectedSubstanceState.value === null}
-              state={fromUnitFieldState}
-            />
-            <IconWrapper color="dark.4" pt={42}>
-              <AiOutlineSwap size={24} />
-            </IconWrapper>
-            <UnitField
-              readOnly
-              isDisabled={selectedSubstanceState.value === null}
-              state={toUnitFieldState}
-            />
-          </Group>
-        </Stack>
+						{selectedSubstanceState.value && (
+							<Group className={cn["units-fields-wrapper"]}>
+								<UnitFields
+									selectedSubstanceId={selectedSubstanceState.value}
+								/>
+							</Group>
+						)}
 
-        <Group w="100%" align="stretch" className={cn.info_sections}>
-          {selectedSubstanceState.value !== null && (
-            <>{Substances.get(selectedSubstanceState.value)!.InfoSections}</>
-          )}
-        </Group>
-      </Group>
-    </Container>
-  );
+						<Text size="sm" c="dark.0" ta="start">
+							Примечание: Для лития значения в ммоль/л и мЭкв/л численно равны,
+							поскольку литий является одновалентным ионом (Li⁺).
+						</Text>
+					</Stack>
+				</Grid.Col>
+
+				<Grid.Col span={{ base: 12, sm: 6 }}>
+					{selectedSubstanceState.value && (
+						<Stack>
+							{Substances.get(selectedSubstanceState.value)!.NormativeValues}
+							{Substances.get(selectedSubstanceState.value)!.InfoSections}
+						</Stack>
+					)}
+				</Grid.Col>
+				<Group></Group>
+			</Grid>
+		</Container>
+	);
+};
+
+type UnitFieldsProps = {
+	selectedSubstanceId: NonNullable<UseSelectStateTypes.Return["value"]>;
+};
+
+const UnitFields: FC<UnitFieldsProps> = (props) => {
+	const state = useFromToUnitsState({
+		selectedSubstanceId: props.selectedSubstanceId,
+	});
+
+	return (
+		<>
+			<UnitField {...state.from} />
+
+			<IconWrapper color="dark.4">
+				<AiOutlineSwap size={24} />
+			</IconWrapper>
+
+			<UnitField {...state.to} />
+		</>
+	);
 };
 
 export default ConverterPage;

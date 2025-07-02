@@ -1,51 +1,89 @@
-export function convertUnitToMmol(args: {
-  // from unit
-  unit: string
-  value: number
-  molarMass: number
-}) {
-  // Сначала переводим всё в ммоль/л
-  switch (args.unit) {
-    case 'mmol_l':
-      return args.value
-    case 'meq_l':
-      // todo: сейчас считает только для одновалентных ионов
-      return args.value
-    case 'micromol_l':
-      return args.value / 1000;
-    case 'mg_l':
-      return args.value / args.molarMass;
-    case 'mcg_l':
-      return (args.value / 1000) / args.molarMass;
-    default: {
-      throw new Error("Некорректная ед. изм.")
-    }
-  }
+// Типы для единиц измерения
+export type Unit = "mmol_l" | "meq_l" | "micromol_l" | "mg_l" | "mcg_l";
+
+// Константы
+const CONVERSION_FACTORS = {
+	MICROMOL_TO_MMOL: 1e3,
+	MCG_TO_MG: 1e3,
+} as const;
+
+// Интерфейс для конвертации
+interface ConversionConfig {
+	unit: Unit;
+	value: number;
+	molarMass: number;
+	valence?: number; // для многовалентных ионов
 }
 
-export function convertMmolToUnit(args: {
-  // to unit
-  unit: string
-  // mmol only
-  value: number
-  molarMass: number
-}) {
-  // Теперь переводим из ммоль/л в нужную целевую единицу
+// Lookup таблица для конвертации в ммоль/л
+const toMmolFactors: Record<
+	Unit,
+	(value: number, molarMass: number, valence?: number) => number
+> = {
+	mmol_l: (value) => value,
+	meq_l: (value, _, valence = 1) => value / valence,
+	micromol_l: (value) => value / CONVERSION_FACTORS.MICROMOL_TO_MMOL,
+	mg_l: (value, molarMass) => value / molarMass,
+	mcg_l: (value, molarMass) => value / CONVERSION_FACTORS.MCG_TO_MG / molarMass,
+};
 
-  switch (args.unit) {
-    case 'mmol_l':
-      return args.value;
-    case 'meq_l':
-      // todo: сейчас считает только для одновалентных ионов
-      return args.value;
-    case 'micromol_l':
-      return args.value * 1000;
-    case 'mg_l':
-      return args.value * args.molarMass;
-    case 'mcg_l':
-      return args.value * args.molarMass * 1000;
-    default: {
-      throw new Error("Некорректная ед. изм.")
-    }
-  }
+// Lookup таблица для конвертации из ммоль/л
+const fromMmolFactors: Record<
+	Unit,
+	(value: number, molarMass: number, valence?: number) => number
+> = {
+	mmol_l: (value) => value,
+	meq_l: (value, _, valence = 1) => value * valence,
+	micromol_l: (value) => value * CONVERSION_FACTORS.MICROMOL_TO_MMOL,
+	mg_l: (value, molarMass) => value * molarMass,
+	mcg_l: (value, molarMass) => value * molarMass * CONVERSION_FACTORS.MCG_TO_MG,
+};
+
+export function convertUnitToMmol({
+	unit,
+	value,
+	molarMass,
+	valence = 1,
+}: ConversionConfig): number {
+	if (!toMmolFactors[unit]) {
+		throw new Error(`Неподдерживаемая единица измерения: ${unit}`);
+	}
+
+	return toMmolFactors[unit](value, molarMass, valence);
+}
+
+export function convertMmolToUnit({
+	unit,
+	value,
+	molarMass,
+	valence = 1,
+}: ConversionConfig): number {
+	if (!fromMmolFactors[unit]) {
+		throw new Error(`Неподдерживаемая единица измерения: ${unit}`);
+	}
+
+	return fromMmolFactors[unit](value, molarMass, valence);
+}
+
+// Универсальная функция конвертации между любыми единицами
+export function convertUnit(args: {
+	fromUnit: Unit;
+	toUnit: Unit;
+	value: number;
+	molarMass: number;
+	valence?: number;
+}): number {
+	const mmolValue = convertUnitToMmol({
+		unit: args.fromUnit,
+		value: args.value,
+		molarMass: args.molarMass,
+		valence: args.valence,
+	});
+
+	return convertMmolToUnit({
+		unit: args.toUnit,
+		value: mmolValue,
+		molarMass: args.molarMass,
+		valence: args.valence,
+	});
 }

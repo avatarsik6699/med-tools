@@ -3,8 +3,8 @@ import ConverterPage from "@/pages/converter-page";
 import { rootRoute } from "../root/route";
 
 export const converterRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  // validateSearch: searchParams,
-  path: "/",
-  component: ConverterPage
+	getParentRoute: () => rootRoute,
+	// validateSearch: searchParams,
+	path: "/",
+	component: ConverterPage,
 });

@@ -4,8 +4,8 @@ import { searchParams } from "./search-params-schema";
 import MainPage from "../../../../pages/main-page/main-page";
 
 export const mainRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  validateSearch: searchParams,
-  path: "/123",
-  component: MainPage,
+	getParentRoute: () => rootRoute,
+	validateSearch: searchParams,
+	path: "/123",
+	component: MainPage,
 });
