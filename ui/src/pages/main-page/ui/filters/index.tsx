@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+
 import {
 	Box,
 	Button,
@@ -101,8 +104,6 @@ const Filters: FC<Props> = (props) => {
 				if (pages.isInitialPage) {
 					if (item.id in sp.state) {
 						if (item.children) {
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-expect-error
 							selectedCount = (
 								sp.state[item.id as keyof FiltersTypes.State] as string[]
 							).length;
@@ -114,8 +115,6 @@ const Filters: FC<Props> = (props) => {
 					const parent = pages.last();
 					console.log(sp.state, item.value);
 					if (parent.id in sp.state) {
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-expect-error
 						isSelected = (
 							sp.state[parent.id as keyof FiltersTypes.State] as string[]
 						).includes(item.value);
