@@ -10,6 +10,9 @@ import Header from "./header";
 import NavBar from "./nav-bar";
 import { overrideTheme } from "./theme";
 
+import eruda from "eruda";
+eruda.init();
+
 const App: FC = () => {
 	const [isMobile, { toggle: toggleMobile }] = useDisclosure();
 	const [isDesktop, { toggle: toggleDesktop }] = useDisclosure(true);

@@ -59,6 +59,7 @@ export const useFromToUnitsState = (params: Params) => {
 			input: {
 				value: fromInputState.value,
 				onChange: (value: InputStateValue) => {
+					console.log('onChange from')
 					fromInputState.onChange(value);
 
 					onChangeDependField(
@@ -90,6 +91,7 @@ export const useFromToUnitsState = (params: Params) => {
 			input: {
 				value: toInputState.value,
 				onChange: (value: InputStateValue) => {
+					console.log('onChange to')
 					toInputState.onChange(value);
 
 					onChangeDependField(

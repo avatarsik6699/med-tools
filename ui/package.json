@@ -20,6 +20,7 @@
     "@tanstack/react-router-devtools": "^1.121.34",
     "axios": "^1.10.0",
     "dayjs": "^1.11.13",
+    "eruda": "^3.4.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-icons": "^5.5.0",

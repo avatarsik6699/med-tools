@@ -58,8 +58,9 @@ const UnitField: FC<Props> = (props) => {
 			decimalSeparator=","
 			thousandSeparator=" "
 			allowNegative={false}
-			stepHoldDelay={500}
-			stepHoldInterval={(t) => Math.max(1000 / t ** 2, 25)}
+			hideControls={false}
+			allowDecimal={true}
+			clampBehavior="strict"
 		/>
 	);
 };
