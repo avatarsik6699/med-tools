@@ -11,7 +11,7 @@ import NavBar from "./nav-bar";
 import { overrideTheme } from "./theme";
 
 import eruda from "eruda";
-eruda.init();
+// eruda.init();
 
 const App: FC = () => {
 	const [isMobile, { toggle: toggleMobile }] = useDisclosure();

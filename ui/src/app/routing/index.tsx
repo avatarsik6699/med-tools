@@ -8,6 +8,7 @@ import { z } from "zod";
 import { mainRoute } from "./routes/main/route";
 import { rootRoute } from "./routes/root/route";
 import { converterRoute } from "./routes/converter/route";
+import { pathWaysRoute } from "./routes/pathways/pathways.route";
 
 const productSearchSchema = z.object({
 	page: z.number().default(1),
@@ -89,7 +90,7 @@ export const router = createRouter({
 		converterRoute,
 		mainRoute,
 		aboutPage,
-		protectedRoute.addChildren([profileRoute, settingsRoute]),
+		protectedRoute.addChildren([profileRoute, settingsRoute, pathWaysRoute]),
 	]),
 });
 
