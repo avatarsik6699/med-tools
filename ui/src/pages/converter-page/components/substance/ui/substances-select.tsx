@@ -12,10 +12,10 @@ const SubstancesSelect: FC<Props> = ({ state }) => {
 		<Select
 			{...state}
 			size="md"
-			searchable
-			maxDropdownHeight={250}
+			searchable={false}
 			comboboxProps={{ transitionProps: { transition: "pop", duration: 200 } }}
-			clearable
+			clearable={false}
+			allowDeselect={false}
 			placeholder="Выберите вещество"
 			nothingFoundMessage="Ничего не найдено"
 			data={useMemo(

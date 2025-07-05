@@ -34,11 +34,11 @@ const UnitField: FC<Props> = (props) => {
 					}}
 					styles={{
 						root: {
-							marginRight: rem(5),
+							marginRight: rem(4),
 						},
 						input: {
-							height: "var(--input-height-sm)",
-							minHeight: "var(--input-height-sm)",
+							height: rem(32),
+							minHeight: rem(32),
 							paddingRight: rem(5),
 							paddingLeft: rem(5),
 						},
@@ -50,7 +50,7 @@ const UnitField: FC<Props> = (props) => {
 					allowDeselect={false}
 				/>
 			}
-			size="lg"
+			size="md"
 			min={0}
 			autoFocus={false}
 			variant="default"

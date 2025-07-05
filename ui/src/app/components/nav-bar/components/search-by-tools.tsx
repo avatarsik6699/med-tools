@@ -11,6 +11,7 @@ const SearchByTools: FC = () => {
 			leftSection={<LuSearch size={16} />}
 			value={search.value}
 			miw={240}
+			w="100%"
 			onChange={(e) => search.set(e.currentTarget.value)}
 			placeholder="Введите название..."
 		/>

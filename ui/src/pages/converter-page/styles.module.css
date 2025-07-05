@@ -1,4 +1,5 @@
 .units-fields-wrapper {
+  display: flex;
   flex-wrap: wrap;
   flex-direction: column;
   width: 100%;
@@ -8,13 +9,21 @@
     transform: rotate(90deg);
   }
 
+  & > * {
+    width: 100%;
+  }
 
-  @media (min-width: $mantine-breakpoint-md) {
+
+  @media (min-width: $mantine-breakpoint-xs) {
     flex-wrap: nowrap;
     flex-direction: row;
 
     & > :global(.mantine-ThemeIcon-root) {
       transform: unset;
+    }
+
+    & > * {
+      width: auto;
     }
   }
 }

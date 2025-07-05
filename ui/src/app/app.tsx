@@ -1,21 +1,18 @@
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
-import "../shared/styles/animations.css";
+import "@/shared/styles/animations.css";
 
 import { AppShell, Burger, MantineProvider } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Outlet } from "@tanstack/react-router";
 import type { FC } from "react";
-import Header from "./header";
-import NavBar from "./nav-bar";
+import Header from "./components/header";
+import NavBar from "./components/nav-bar/nav-bar";
 import { overrideTheme } from "./theme";
 
-import eruda from "eruda";
-// eruda.init();
-
 const App: FC = () => {
-	const [isMobile, { toggle: toggleMobile }] = useDisclosure();
-	const [isDesktop, { toggle: toggleDesktop }] = useDisclosure(true);
+	const [isMobileOpen, { toggle: toggleMobile }] = useDisclosure();
+	const [isDesktopOpen, { toggle: toggleDesktop }] = useDisclosure(true);
 
 	return (
 		<MantineProvider theme={overrideTheme}>
@@ -24,26 +21,26 @@ const App: FC = () => {
 				header={{ height: 60 }}
 				navbar={{
 					width: 300,
-					breakpoint: "sm",
-					collapsed: { mobile: !isMobile, desktop: !isDesktop },
+					breakpoint: "xs",
+					collapsed: { mobile: !isMobileOpen, desktop: !isDesktopOpen },
 				}}
 			>
 				<Header
 					Burger={
 						<>
 							<Burger
-								lineSize={0.5}
-								opened={isMobile}
+								lineSize={1.5}
+								opened={isMobileOpen}
 								onClick={toggleMobile}
-								hiddenFrom="sm"
-								size="sm"
+								hiddenFrom="xs"
+								size="md"
 							/>
 							<Burger
-								lineSize={0.5}
-								opened={isDesktop}
+								lineSize={1.5}
+								opened={isDesktopOpen}
 								onClick={toggleDesktop}
-								visibleFrom="sm"
-								size="sm"
+								visibleFrom="xs"
+								size="md"
 							/>
 						</>
 					}
@@ -51,7 +48,7 @@ const App: FC = () => {
 
 				<NavBar
 					onItemClick={() => {
-						if (isMobile) {
+						if (isMobileOpen) {
 							toggleMobile();
 						} else {
 							toggleDesktop();
@@ -61,7 +58,6 @@ const App: FC = () => {
 
 				<AppShell.Main>
 					<Outlet />
-					{/* <TanStackRouterDevtools /> */}
 				</AppShell.Main>
 			</AppShell>
 		</MantineProvider>

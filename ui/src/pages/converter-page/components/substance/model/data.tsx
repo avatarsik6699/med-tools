@@ -14,6 +14,7 @@ export const Substances = new Map<string, ConverterPageTypes.Substance>([
 			NormativeValues: <LitiumStandarts />,
 			InfoSections: [
 				<InfoSection
+					withScroll={false}
 					title="Частота сдачи крови на Литий (Li)"
 					color="cyan.5"
 					variant="light"
@@ -40,7 +41,8 @@ export const Substances = new Map<string, ConverterPageTypes.Substance>([
 							Один раз в неделю — до достижения целевой концентрации
 						</List.Item>
 						<List.Item>
-							Один раз в три месяца — первые полгода после достижения целевой концентрации
+							Один раз в три месяца — первые полгода после достижения целевой
+							концентрации
 						</List.Item>
 						<List.Item>
 							Один раз в год на протяжении всего времени приёма

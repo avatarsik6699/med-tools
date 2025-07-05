@@ -1,10 +1,10 @@
 import RouterLink from "@/shared/ui/router-link";
-import { AppShell, Divider, Group, ScrollArea } from "@mantine/core";
+import { AppShell, ScrollArea, Stack } from "@mantine/core";
 import { type FC } from "react";
-import { TbTransform } from "react-icons/tb";
-import cn from "./styles.module.css";
-import SearchByTools from "./ui/search-by-tools";
 import { PiPath } from "react-icons/pi";
+import { TbTransform } from "react-icons/tb";
+import SearchByTools from "./components/search-by-tools";
+import cn from "./styles.module.css";
 
 type Props = {
 	onItemClick: () => void;
@@ -20,8 +20,9 @@ const NavBar: FC<Props> = (props) => {
 			<AppShell.Section mb="xs">
 				<SearchByTools />
 			</AppShell.Section>
-			<AppShell.Section grow component={ScrollArea}>
-				<Group>
+
+			<AppShell.Section component={ScrollArea} grow>
+				<Stack gap="xs">
 					<RouterLink onClick={onItemClick} className={cn.navbar_link} to="/">
 						<TbTransform size={16} /> Конвертер
 					</RouterLink>
@@ -32,10 +33,7 @@ const NavBar: FC<Props> = (props) => {
 					>
 						<PiPath size={16} /> Схемы
 					</RouterLink>
-				</Group>
-			</AppShell.Section>
-			<AppShell.Section>
-				<Divider />
+				</Stack>
 			</AppShell.Section>
 		</AppShell.Navbar>
 	);

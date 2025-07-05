@@ -19,11 +19,12 @@ const initialNodes = [
 const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
 
 const PathwaysPage: FC = () => {
-	const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const [nodes, _, onNodesChange] = useNodesState(initialNodes);
 	const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
 	const onConnect = useCallback(
-		(params) => setEdges((eds) => addEdge(params, eds)),
+		(params: unknown) => setEdges((eds) => addEdge(params as never, eds)),
 		[setEdges],
 	);
 

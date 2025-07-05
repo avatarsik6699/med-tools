@@ -8,9 +8,12 @@ import {
 	useSelectState,
 	type UseSelectStateTypes,
 } from "@/shared/hooks/use-select-state";
-import { Substances } from "../ui/substance/model/data";
-import { convertUnit, type Unit } from "../ui/unit-field/model/convert-unit";
-import { Units } from "../ui/unit-field/model/data";
+import { Substances } from "../components/substance/model/data";
+import {
+	convertUnit,
+	type Unit,
+} from "../components/unit-field/model/convert-unit";
+import { Units } from "../components/unit-field/model/data";
 
 type InputStateValue = NumberInputProps["value"];
 type SelectStateValue = UseSelectStateTypes.Params["initialValue"];
@@ -59,7 +62,6 @@ export const useFromToUnitsState = (params: Params) => {
 			input: {
 				value: fromInputState.value,
 				onChange: (value: InputStateValue) => {
-					console.log('onChange from')
 					fromInputState.onChange(value);
 
 					onChangeDependField(
@@ -91,7 +93,6 @@ export const useFromToUnitsState = (params: Params) => {
 			input: {
 				value: toInputState.value,
 				onChange: (value: InputStateValue) => {
-					console.log('onChange to')
 					toInputState.onChange(value);
 
 					onChangeDependField(
