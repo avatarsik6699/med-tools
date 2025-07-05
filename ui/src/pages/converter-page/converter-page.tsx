@@ -23,11 +23,11 @@ const ConverterPage: FC = () => {
 				Концентрация лития в крови
 			</Title>
 
-			<Stack>
+			<Stack gap={0} mb="xl">
 				<SubstancesSelect state={selectedSubstanceState} />
 
 				{selectedSubstanceState.value && (
-					<Box className={cn["units-fields-wrapper"]}>
+					<Box mb={4} className={cn["units-fields-wrapper"]}>
 						<UnitFields selectedSubstanceId={selectedSubstanceState.value} />
 					</Box>
 				)}

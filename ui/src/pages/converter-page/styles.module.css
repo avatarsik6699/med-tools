@@ -15,7 +15,6 @@
 
 
   @media (min-width: $mantine-breakpoint-xs) {
-    flex-wrap: nowrap;
     flex-direction: row;
 
     & > :global(.mantine-ThemeIcon-root) {

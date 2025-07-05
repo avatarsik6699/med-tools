@@ -12,6 +12,7 @@ const SubstancesSelect: FC<Props> = ({ state }) => {
 		<Select
 			{...state}
 			size="md"
+			mb="md"
 			searchable={false}
 			comboboxProps={{ transitionProps: { transition: "pop", duration: 200 } }}
 			clearable={false}
