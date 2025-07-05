@@ -1,5 +1,5 @@
 import { useSelectState } from "@/shared/hooks/use-select-state";
-import { Box, em, List, rem, Select, Stack, Text } from "@mantine/core";
+import { List, rem, Select, Stack, Text } from "@mantine/core";
 import { type FC } from "react";
 
 import { PiStandardDefinition } from "react-icons/pi";
