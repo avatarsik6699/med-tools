@@ -9,6 +9,7 @@ import UnitField from "./components/unit-field";
 import { ConverterPageProvider } from "./converter-page.context";
 import { useFromToUnitsState } from "./model/use-from-to-units-state";
 import cn from "./styles.module.css";
+import type { Unit } from "./components/unit-field/model/convert-unit";
 
 const ConverterPage: FC = () => {
 	const selectedSubstanceState = useSelectState({
@@ -42,6 +43,7 @@ const ConverterPage: FC = () => {
 
 			<ConverterPageProvider
 				value={{
+					fromInputUnit: state.from.select.value! as Unit,
 					fromInputValue:
 						// TODO: надо сделать более норм проверку
 						state.from.input.value === undefined ||

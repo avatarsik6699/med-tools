@@ -9,6 +9,7 @@ import { useConverterPageContext } from "../../../../converter-page.context";
 import { IoAlert, IoCheckmark } from "react-icons/io5";
 
 import IconWrapper from "../../../../../../shared/ui/icon-wrapper";
+import { convertUnitToMmol } from "../../../unit-field/model/convert-unit";
 
 type ValidationRange =
 	| {
@@ -272,25 +273,40 @@ const LitiumStandarts: FC = () => {
 
 type ValidationItemProps = ValidationItem;
 
+const MOLAR_MASS_LI = 6.94; // г/моль для лития
+const VALENCE_LI = 1; // одновалентный ион
+
 const ValidationItem: FC<ValidationItemProps> = (props) => {
 	const ctx = useConverterPageContext();
 
 	let status: "ok" | "error" | "neutral" = "neutral";
 
-	if (props.range && ctx.fromInputValue !== null) {
+	// Преобразуем введенное значение в ммоль/л для корректного сравнения с диапазоном
+	let valueInMmol: number | null = null;
+	if (ctx.fromInputValue !== null && ctx.fromInputUnit) {
+		try {
+			valueInMmol = convertUnitToMmol({
+				unit: ctx.fromInputUnit,
+				value: ctx.fromInputValue,
+				molarMass: MOLAR_MASS_LI,
+				valence: VALENCE_LI,
+			});
+		} catch {
+			valueInMmol = null;
+		}
+	}
+
+	if (props.range && valueInMmol !== null) {
 		if ("min" in props.range && "max" in props.range) {
 			// Диапазон: min-max
-			if (
-				ctx.fromInputValue >= props.range.min &&
-				ctx.fromInputValue <= props.range.max
-			) {
+			if (valueInMmol >= props.range.min && valueInMmol <= props.range.max) {
 				status = "ok";
 			} else {
 				status = "error";
 			}
 		} else if ("value" in props.range) {
 			// Только value: невалидно, если больше value
-			if (ctx.fromInputValue > props.range.value) {
+			if (valueInMmol > props.range.value) {
 				status = "error";
 			} else {
 				status = "ok";
