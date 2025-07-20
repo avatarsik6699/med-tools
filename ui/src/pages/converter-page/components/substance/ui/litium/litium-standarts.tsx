@@ -10,11 +10,13 @@ import { IoAlert, IoCheckmark } from "react-icons/io5";
 
 import IconWrapper from "../../../../../../shared/ui/icon-wrapper";
 
-interface ValidationRange {
-	min: number;
-	max: number;
-	unit: string;
-}
+type ValidationRange =
+	| {
+			min: number;
+			max: number;
+			unit: string;
+	  }
+	| { value: number; unit: string };
 
 interface ValidationItem {
 	condition: string;
@@ -34,9 +36,9 @@ const data = new Map<string, StandardData>([
 		"Stahl",
 		{
 			value: "Stahl",
-			label: "Stahl's PRESCRIBER'S GUIDE",
+			label: "S. Stahl Prescriber's Guide",
 			source:
-				"Stahl's Essential Psychopharmacology PRESCRIBER'S GUIDE (8th edition, 2024)",
+				"Stahl's Essential Psychopharmacology Prescriber's Guide (8th edition, 2024)",
 			items: [
 				{
 					condition: "Маниакальный эпизод",
@@ -57,7 +59,7 @@ const data = new Map<string, StandardData>([
 		"MODSLI",
 		{
 			value: "MODSLI",
-			label: "Прескрайбер Модсли",
+			label: "The Maudsley Prescribing Guidelines",
 			source:
 				"The Maudsley Prescribing Guidelines in Psychiatry (15th edition, 2025)",
 			items: [
@@ -106,7 +108,7 @@ const data = new Map<string, StandardData>([
 				},
 				{
 					condition: "Токсическая доза",
-					range: { min: 1.5, max: 1.5, unit: "ммоль/л" },
+					range: { value: 1.5, unit: "ммоль/л" },
 				},
 			],
 		},
@@ -186,12 +188,12 @@ const data = new Map<string, StandardData>([
 					range: { min: 0.6, max: 1.3, unit: "ммоль/л" },
 				},
 				{
-					condition: "Депрессивный эпизод",
-					range: { min: 0.8, max: 1.3, unit: "мЭкв/л" },
-				},
-				{
 					condition: "Профилактика маниакальных эпизодов",
 					range: { min: 0.6, max: 1.5, unit: "ммоль/л" },
+				},
+				{
+					condition: "Депрессивный эпизод",
+					range: { min: 0.8, max: 1.3, unit: "мЭкв/л" },
 				},
 				{
 					condition: "Профилактика депрессивных эпизодов",
@@ -269,26 +271,51 @@ const LitiumStandarts: FC = () => {
 };
 
 type ValidationItemProps = ValidationItem;
+
 const ValidationItem: FC<ValidationItemProps> = (props) => {
 	const ctx = useConverterPageContext();
 
 	let status: "ok" | "error" | "neutral" = "neutral";
+
 	if (props.range && ctx.fromInputValue !== null) {
-		if (
-			ctx.fromInputValue >= props.range.min &&
-			ctx.fromInputValue <= props.range.max
-		) {
-			status = "ok";
-		} else {
-			status = "error";
+		if ("min" in props.range && "max" in props.range) {
+			// Диапазон: min-max
+			if (
+				ctx.fromInputValue >= props.range.min &&
+				ctx.fromInputValue <= props.range.max
+			) {
+				status = "ok";
+			} else {
+				status = "error";
+			}
+		} else if ("value" in props.range) {
+			// Только value: невалидно, если больше value
+			if (ctx.fromInputValue > props.range.value) {
+				status = "error";
+			} else {
+				status = "ok";
+			}
 		}
 	}
+
+	const renderRange = () => {
+		if (!props.range) return null;
+		if ("min" in props.range && "max" in props.range) {
+			if (props.range.min === props.range.max) {
+				return `${props.range.min.toFixed(1).replace(".", ",")} ${props.range.unit}`;
+			}
+			return `${props.range.min.toFixed(1).replace(".", ",")} - ${props.range.max.toFixed(1).replace(".", ",")} ${props.range.unit}`;
+		} else if ("value" in props.range) {
+			return `≥ ${props.range.value.toFixed(1).replace(".", ",")} ${props.range.unit}`;
+		}
+		return null;
+	};
 
 	return (
 		<List.Item>
 			<Stack gap={4}>
 				<Text size="md" fw={500}>
-					{props.condition}:
+					{props.condition} {props.range ? ":" : ""}
 				</Text>
 				{props.range && (
 					<Flex align="center">
@@ -312,8 +339,7 @@ const ValidationItem: FC<ValidationItemProps> = (props) => {
 										: "dark.4"
 							}
 						>
-							{props.range.min.toFixed(1).replace(".", ",")} -{" "}
-							{props.range.max.toFixed(1).replace(".", ",")} {props.range.unit}
+							{renderRange()}
 						</Text>
 					</Flex>
 				)}
