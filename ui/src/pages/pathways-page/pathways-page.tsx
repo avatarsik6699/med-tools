@@ -8,15 +8,61 @@ import {
 	useEdgesState,
 	addEdge,
 	BackgroundVariant,
+	Handle,
+	Position,
 } from "@xyflow/react";
 
 import "@xyflow/react/dist/style.css";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function TextUpdaterNode(props: any) {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const onChange = useCallback((evt: any) => {
+		console.log(evt.target.value);
+	}, []);
+	console.log(props);
+	return (
+		<div className="text-updater-node">
+			<Handle
+				type="target"
+				position={Position.Top}
+				id={`${props.id}-target-top`}
+			/>
+			<div>
+				<label htmlFor="text">Text:</label>
+				<input id="text" name="text" onChange={onChange} className="nodrag" />
+			</div>
+
+			<Handle
+				type="source"
+				position={Position.Right}
+				id={`${props.id}-source-right`}
+			/>
+		</div>
+	);
+}
+
 const initialNodes = [
-	{ id: "1", position: { x: 0, y: 0 }, data: { label: "1" } },
-	{ id: "2", position: { x: 0, y: 100 }, data: { label: "2" } },
+	{
+		id: "1",
+		type: "textUpdater",
+		position: { x: 0, y: 0 },
+		data: { label: "1", value: 123 },
+	},
+	{ id: "2", position: { x: 0, y: 100 }, data: { label: "2", value: 345 } },
 ];
-const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
+
+const initialEdges = [
+	{
+		id: "e1-2",
+		source: "1",
+		target: "2",
+		sourceHandle: "1-source-right", // Указываем конкретный handle
+		// targetHandle: "2-target-left",
+	},
+];
+
+const nodeTypes = { textUpdater: TextUpdaterNode };
 
 const PathwaysPage: FC = () => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -33,9 +79,11 @@ const PathwaysPage: FC = () => {
 			<ReactFlow
 				nodes={nodes}
 				edges={edges}
+				nodeTypes={nodeTypes}
 				onNodesChange={onNodesChange}
 				onEdgesChange={onEdgesChange}
 				onConnect={onConnect}
+				fitView
 			>
 				<Controls />
 				<MiniMap />

@@ -1,9 +1,14 @@
 import { useSelectState } from "@/shared/hooks/use-select-state";
-import { List, rem, Select, Stack, Text } from "@mantine/core";
+import { Flex, List, rem, Select, Stack, Text } from "@mantine/core";
 import { type FC } from "react";
 
 import { PiStandardDefinition } from "react-icons/pi";
 import InfoSection from "../info-section";
+import { useConverterPageContext } from "../../../../converter-page.context";
+
+import { IoAlert, IoCheckmark } from "react-icons/io5";
+
+import IconWrapper from "../../../../../../shared/ui/icon-wrapper";
 
 interface ValidationRange {
 	min: number;
@@ -264,46 +269,83 @@ const LitiumStandarts: FC = () => {
 };
 
 type ValidationItemProps = ValidationItem;
-const ValidationItem: FC<ValidationItemProps> = (props) => (
-	<List.Item>
-		<Stack gap={4}>
-			<Text size="sm" fw={500}>
-				{props.condition}:
-			</Text>
-			{props.range && (
-				<Text size="sm" c="dark.4">
-					{props.range.min.toFixed(1).replace(".", ",")} -{" "}
-					{props.range.max.toFixed(1).replace(".", ",")} {props.range.unit}
+const ValidationItem: FC<ValidationItemProps> = (props) => {
+	const ctx = useConverterPageContext();
+
+	let status: "ok" | "error" | "neutral" = "neutral";
+	if (props.range && ctx.fromInputValue !== null) {
+		if (
+			ctx.fromInputValue >= props.range.min &&
+			ctx.fromInputValue <= props.range.max
+		) {
+			status = "ok";
+		} else {
+			status = "error";
+		}
+	}
+
+	return (
+		<List.Item>
+			<Stack gap={4}>
+				<Text size="md" fw={500}>
+					{props.condition}:
 				</Text>
-			)}
-			{props.children && (
-				<List
-					styles={{
-						item: {
-							listStyle: "none",
-						},
-						itemWrapper: {
-							display: "flex",
-							alignItems: "flex-start",
-						},
-						root: {
-							listStyle: "none",
-							gap: rem(8),
-							marginBottom: rem(8),
-							marginLeft: rem(16),
-						},
-					}}
-					component={Stack}
-					c="dark.5"
-					size="sm"
-				>
-					{props.children.map((item, index) => (
-						<ValidationItem key={index} {...item} />
-					))}
-				</List>
-			)}
-		</Stack>
-	</List.Item>
-);
+				{props.range && (
+					<Flex align="center">
+						{status === "error" && (
+							<IconWrapper color="red.7">
+								<IoAlert size={21} />
+							</IconWrapper>
+						)}
+						{status === "ok" && (
+							<IconWrapper color="green.7">
+								<IoCheckmark size={21} />
+							</IconWrapper>
+						)}
+						<Text
+							size="md"
+							c={
+								status === "ok"
+									? "green.7"
+									: status === "error"
+										? "red.7"
+										: "dark.4"
+							}
+						>
+							{props.range.min.toFixed(1).replace(".", ",")} -{" "}
+							{props.range.max.toFixed(1).replace(".", ",")} {props.range.unit}
+						</Text>
+					</Flex>
+				)}
+				{props.children && (
+					<List
+						styles={{
+							item: {
+								listStyle: "none",
+							},
+							itemWrapper: {
+								display: "flex",
+								alignItems: "flex-start",
+							},
+							root: {
+								listStyle: "none",
+								gap: rem(8),
+								marginBottom: rem(8),
+								marginLeft: rem(16),
+							},
+						}}
+						component={Stack}
+						c="dark.5"
+						size="sm"
+					>
+						{props.children.map((item, index) => (
+							<ValidationItem key={index} {...item} />
+						))}
+					</List>
+				)}
+			</Stack>
+		</List.Item>
+	);
+};
 
 export default LitiumStandarts;

@@ -1,20 +1,22 @@
 import { Box, Container, Stack, Text, Title } from "@mantine/core";
 import { type FC } from "react";
 import { AiOutlineSwap } from "react-icons/ai";
-import {
-	useSelectState,
-	type UseSelectStateTypes,
-} from "../../shared/hooks/use-select-state";
+import { useSelectState } from "../../shared/hooks/use-select-state";
 import IconWrapper from "../../shared/ui/icon-wrapper";
 import { Substances } from "./components/substance/model/data";
 import SubstancesSelect from "./components/substance/ui/substances-select";
 import UnitField from "./components/unit-field";
+import { ConverterPageProvider } from "./converter-page.context";
 import { useFromToUnitsState } from "./model/use-from-to-units-state";
 import cn from "./styles.module.css";
 
 const ConverterPage: FC = () => {
 	const selectedSubstanceState = useSelectState({
 		initialValue: "litium",
+	});
+
+	const state = useFromToUnitsState({
+		selectedSubstanceId: selectedSubstanceState.value!,
 	});
 
 	return (
@@ -28,7 +30,7 @@ const ConverterPage: FC = () => {
 
 				{selectedSubstanceState.value && (
 					<Box mb={4} className={cn["units-fields-wrapper"]}>
-						<UnitFields selectedSubstanceId={selectedSubstanceState.value} />
+						<UnitFields state={state} />
 					</Box>
 				)}
 
@@ -38,25 +40,32 @@ const ConverterPage: FC = () => {
 				</Text>
 			</Stack>
 
-			{selectedSubstanceState.value && (
-				<Stack>
-					{Substances.get(selectedSubstanceState.value)!.NormativeValues}
-					{Substances.get(selectedSubstanceState.value)!.InfoSections}
-				</Stack>
-			)}
+			<ConverterPageProvider
+				value={{
+					fromInputValue:
+						// TODO: надо сделать более норм проверку
+						state.from.input.value === undefined ||
+						state.from.input.value === ""
+							? null
+							: (state.from.input.value as number),
+				}}
+			>
+				{selectedSubstanceState.value && (
+					<Stack>
+						{Substances.get(selectedSubstanceState.value)!.NormativeValues}
+						{Substances.get(selectedSubstanceState.value)!.InfoSections}
+					</Stack>
+				)}
+			</ConverterPageProvider>
 		</Container>
 	);
 };
 
 type UnitFieldsProps = {
-	selectedSubstanceId: NonNullable<UseSelectStateTypes.Return["value"]>;
+	state: ReturnType<typeof useFromToUnitsState>;
 };
 
-const UnitFields: FC<UnitFieldsProps> = (props) => {
-	const state = useFromToUnitsState({
-		selectedSubstanceId: props.selectedSubstanceId,
-	});
-
+const UnitFields: FC<UnitFieldsProps> = ({ state }) => {
 	return (
 		<>
 			<UnitField {...state.from} />

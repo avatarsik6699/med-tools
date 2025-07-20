@@ -1,7 +1,6 @@
 import RouterLink from "@/shared/ui/router-link";
 import { AppShell, ScrollArea, Stack } from "@mantine/core";
 import { type FC } from "react";
-import { PiPath } from "react-icons/pi";
 import { TbTransform } from "react-icons/tb";
 import SearchByTools from "./components/search-by-tools";
 import cn from "./styles.module.css";
@@ -26,13 +25,15 @@ const NavBar: FC<Props> = (props) => {
 					<RouterLink onClick={onItemClick} className={cn.navbar_link} to="/">
 						<TbTransform size={16} /> Конвертер
 					</RouterLink>
-					<RouterLink
+					{/* TODO: временно отклбючено */}
+					{/* <RouterLink
+						disabled
 						onClick={onItemClick}
 						className={cn.navbar_link}
 						to="/path-ways"
 					>
 						<PiPath size={16} /> Схемы
-					</RouterLink>
+					</RouterLink> */}
 				</Stack>
 			</AppShell.Section>
 		</AppShell.Navbar>
