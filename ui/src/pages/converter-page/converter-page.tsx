@@ -1,84 +1,151 @@
-import { Box, Container, Stack, Text, Title } from "@mantine/core";
-import { type FC } from "react";
+import { Box, Container, List, rem, Stack, Text, Title } from "@mantine/core";
+import React, { useMemo } from "react";
 import { AiOutlineSwap } from "react-icons/ai";
-import { useSelectState } from "../../shared/hooks/use-select-state";
+import { MdTimeline } from "react-icons/md";
+import { TfiHandPointRight } from "react-icons/tfi";
 import IconWrapper from "../../shared/ui/icon-wrapper";
-import { Substances } from "./components/substance/model/data";
-import SubstancesSelect from "./components/substance/ui/substances-select";
+import InfoSection from "./components/info-section";
 import UnitField from "./components/unit-field";
-import { ConverterPageProvider } from "./converter-page.context";
-import { useFromToUnitsState } from "./model/use-from-to-units-state";
-import cn from "./styles.module.css";
-import type { Unit } from "./components/unit-field/model/convert-unit";
+import {
+	ConverterPageProvider,
+	useConverterPageContext,
+} from "./converter-page.context";
+import { ConverterModel } from "./converter-page.model";
+import cn from "./converter-page.module.css";
+import { SubstancesSelect } from "./components/substances-select";
+import LitiumStandarts from "./components/litium-standarts";
+import { observer } from "mobx-react-lite";
+import type { Unit } from "./model/units-convert.utils";
 
-const ConverterPage: FC = () => {
-	const selectedSubstanceState = useSelectState({
-		initialValue: "litium",
-	});
-
-	const state = useFromToUnitsState({
-		selectedSubstanceId: selectedSubstanceState.value!,
-	});
-
+const ConverterPage: React.FC = () => {
 	return (
-		<Container size="md">
-			<Title mb="xl" c="dark.5">
-				Концентрация лития в крови
-			</Title>
+		<ConverterPageProvider
+			value={useMemo(() => ({ $store: new ConverterModel() }), [])}
+		>
+			<Container size="md">
+				<Title mb="xl" c="dark.5">
+					Концентрация лития в крови
+				</Title>
 
-			<Stack gap={0} mb="xl">
-				<SubstancesSelect state={selectedSubstanceState} />
+				<Stack gap={0} mb="xl">
+					<SubstancesSelect />
 
-				{selectedSubstanceState.value && (
 					<Box mb={4} className={cn["units-fields-wrapper"]}>
-						<UnitFields state={state} />
+						<FromUnitField />
+
+						<IconWrapper color="dark.4">
+							<AiOutlineSwap size={24} />
+						</IconWrapper>
+
+						<ToUnitField />
 					</Box>
-				)}
 
-				<Text size="sm" c="dark.0" ta="start">
-					Примечание: Для лития значения в ммоль/л и мЭкв/л численно равны,
-					поскольку литий является одновалентным ионом (Li⁺).
-				</Text>
-			</Stack>
+					<Text size="sm" c="dark.0" ta="start">
+						Примечание: Для лития значения в ммоль/л и мЭкв/л численно равны,
+						поскольку литий является одновалентным ионом (Li⁺).
+					</Text>
+				</Stack>
 
-			<ConverterPageProvider
-				value={{
-					fromInputUnit: state.from.select.value! as Unit,
-					fromInputValue:
-						// TODO: надо сделать более норм проверку
-						state.from.input.value === undefined ||
-						state.from.input.value === ""
-							? null
-							: (state.from.input.value as number),
-				}}
-			>
-				{selectedSubstanceState.value && (
-					<Stack>
-						{Substances.get(selectedSubstanceState.value)!.NormativeValues}
-						{Substances.get(selectedSubstanceState.value)!.InfoSections}
-					</Stack>
-				)}
-			</ConverterPageProvider>
-		</Container>
+				{/* <ConverterPageProvider
+					value={{
+						fromInputUnit: state.from.select.value! as Unit,
+						fromInputValue:
+							// TODO: надо сделать более норм проверку
+							state.from.input.value === undefined ||
+							state.from.input.value === ""
+								? null
+								: (state.from.input.value as number),
+					}}
+				> */}
+				<Stack>
+					<LitiumStandarts />
+					<InfoSection
+						withScroll={false}
+						title="Частота сдачи крови на Литий (Li)"
+						color="cyan.5"
+						variant="light"
+						icon={<MdTimeline size={24} />}
+					>
+						<List
+							component={Stack}
+							styles={{
+								itemWrapper: {
+									display: "flex",
+									alignItems: "flex-start",
+								},
+								root: {
+									listStyle: "none",
+									gap: rem(8),
+									marginBottom: rem(8),
+								},
+							}}
+							icon={<TfiHandPointRight />}
+							c="dark.5"
+							size="sm"
+						>
+							<List.Item>
+								Один раз в неделю — до достижения целевой концентрации
+							</List.Item>
+							<List.Item>
+								Один раз в три месяца — первые полгода после достижения целевой
+								концентрации
+							</List.Item>
+							<List.Item>
+								Один раз в год на протяжении всего времени приёма
+							</List.Item>
+						</List>
+						<Text c="dark.1" size="xs">
+							Источник: Stahl's Essential Psychopharmacology PRESCRIBER'S GUIDE
+							(8th edition, 2024)
+						</Text>
+					</InfoSection>
+				</Stack>
+				{/* </ConverterPageProvider> */}
+			</Container>
+		</ConverterPageProvider>
 	);
 };
 
-type UnitFieldsProps = {
-	state: ReturnType<typeof useFromToUnitsState>;
-};
+const FromUnitField: React.FC = observer(() => {
+	const { $store } = useConverterPageContext();
 
-const UnitFields: FC<UnitFieldsProps> = ({ state }) => {
 	return (
-		<>
-			<UnitField {...state.from} />
-
-			<IconWrapper color="dark.4">
-				<AiOutlineSwap size={24} />
-			</IconWrapper>
-
-			<UnitField {...state.to} />
-		</>
+		<UnitField
+			input={{
+				value: $store.fromValue,
+				onChange: $store.setFromValue,
+			}}
+			select={{
+				value: $store.fromUnit,
+				onChange: (value) => {
+					if (value !== null) {
+						$store.setFromUnit(value as Unit);
+					}
+				},
+			}}
+		/>
 	);
-};
+});
+
+const ToUnitField: React.FC = observer(() => {
+	const { $store } = useConverterPageContext();
+
+	return (
+		<UnitField
+			input={{
+				value: $store.toValue,
+				onChange: $store.setToValue,
+			}}
+			select={{
+				value: $store.toUnit,
+				onChange: (value) => {
+					if (value !== null) {
+						$store.setToUnit(value as Unit);
+					}
+				},
+			}}
+		/>
+	);
+});
 
 export default ConverterPage;

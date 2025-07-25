@@ -1,7 +1,7 @@
-import type { MainRouteTypes } from "../../../../app/routing/routes/main/types";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 export namespace FiltersTypes {
-	export type State = MainRouteTypes.SearchParams;
+	export type State = any;
 
 	export type Filter = {
 		id: string;

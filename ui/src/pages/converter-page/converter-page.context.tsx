@@ -1,9 +1,8 @@
 import { buildContext } from "../../shared/lib";
-import type { Unit } from "./components/unit-field/model/convert-unit";
+import type { ConverterModel } from "./converter-page.model";
 
 type Context = {
-	fromInputUnit: Unit;
-	fromInputValue: number | null;
+	$store: ConverterModel;
 };
 
 export const {

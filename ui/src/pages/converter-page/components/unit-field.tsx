@@ -5,15 +5,15 @@ import {
 	type NumberInputProps,
 	type SelectProps,
 } from "@mantine/core";
-import { type FC } from "react";
-import { Units } from "./model/data";
+import React from "react";
+import { BASE_UNITS_LIST } from "../model/units-convert.utils";
 
 type Props = {
-	select?: SelectProps;
-	input?: NumberInputProps;
+	select: SelectProps;
+	input: NumberInputProps;
 };
 
-const UnitField: FC<Props> = (props) => {
+const UnitField: React.FC<Props> = (props) => {
 	return (
 		<NumberInput
 			{...props.input}
@@ -24,10 +24,13 @@ const UnitField: FC<Props> = (props) => {
 			rightSectionProps={{
 				style: { paddingLeft: 4 },
 			}}
+			inputMode="decimal"
 			rightSection={
 				<Select
 					{...props.select}
-					autoFocus={false}
+					autoComplete="off"
+					autoCorrect="off"
+					// autoFocus={false}
 					rightSectionWidth={20}
 					comboboxProps={{
 						width: "max-content",
@@ -45,13 +48,14 @@ const UnitField: FC<Props> = (props) => {
 					}}
 					size="md"
 					placeholder="ед. изм."
-					data={Units}
+					data={BASE_UNITS_LIST}
 					clearable={false}
 					allowDeselect={false}
 				/>
 			}
 			size="md"
 			min={0}
+			autoComplete="off"
 			autoFocus={false}
 			variant="default"
 			decimalScale={4}
@@ -61,6 +65,7 @@ const UnitField: FC<Props> = (props) => {
 			hideControls={false}
 			allowDecimal={true}
 			clampBehavior="strict"
+			autoCorrect="off"
 		/>
 	);
 };

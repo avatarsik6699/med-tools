@@ -1,13 +1,12 @@
 import { createRouter } from "@tanstack/react-router";
 import { converterRoute } from "./routes/converter/route";
-import { mainRoute } from "./routes/main/route";
 import { pathWaysRoute } from "./routes/pathways/pathways.route";
 import { rootRoute } from "./routes/root/route";
 
 export const router = createRouter({
 	// Добавляем base URL для GitHub Pages
 	basepath: import.meta.env.PROD ? "/med-tools" : "",
-	routeTree: rootRoute.addChildren([converterRoute, mainRoute, pathWaysRoute]),
+	routeTree: rootRoute.addChildren([converterRoute, pathWaysRoute]),
 });
 
 declare module "@tanstack/react-router" {

@@ -1,12 +1,5 @@
 // Типы для единиц измерения
 export type Unit = "mmol_l" | "meq_l" | "micromol_l" | "mg_l" | "mcg_l";
-
-// Константы
-const CONVERSION_FACTORS = {
-	MICROMOL_TO_MMOL: 1e3,
-	MCG_TO_MG: 1e3,
-} as const;
-
 // Интерфейс для конвертации
 interface ConversionConfig {
 	unit: Unit;
@@ -14,6 +7,20 @@ interface ConversionConfig {
 	molarMass: number;
 	valence?: number; // для многовалентных ионов
 }
+
+// Константы
+const CONVERSION_FACTORS = {
+	MICROMOL_TO_MMOL: 1e3,
+	MCG_TO_MG: 1e3,
+} as const;
+
+export const BASE_UNITS_LIST: { value: Unit; label: string }[] = [
+	{ value: "mmol_l", label: "ммоль/л" },
+	{ value: "meq_l", label: "мЭкв/л" },
+	{ value: "micromol_l", label: "мкмоль/л" },
+	{ value: "mg_l", label: "мг/л" },
+	{ value: "mcg_l", label: "мкг/л" },
+] as const;
 
 // Lookup таблица для конвертации в ммоль/л
 const toMmolFactors: Record<

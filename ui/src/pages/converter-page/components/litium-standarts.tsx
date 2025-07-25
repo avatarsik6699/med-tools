@@ -3,13 +3,13 @@ import { Flex, List, rem, Select, Stack, Text } from "@mantine/core";
 import { type FC } from "react";
 
 import { PiStandardDefinition } from "react-icons/pi";
-import InfoSection from "../info-section";
-import { useConverterPageContext } from "../../../../converter-page.context";
 
 import { IoAlert, IoCheckmark } from "react-icons/io5";
-
-import IconWrapper from "../../../../../../shared/ui/icon-wrapper";
-import { convertUnitToMmol } from "../../../unit-field/model/convert-unit";
+import InfoSection from "./info-section";
+import { useConverterPageContext } from "../converter-page.context";
+import { convertUnitToMmol } from "../model/units-convert.utils";
+import IconWrapper from "../../../shared/ui/icon-wrapper";
+import { observer } from "mobx-react-lite";
 
 type ValidationRange =
 	| {
@@ -209,7 +209,7 @@ const data = new Map<string, StandardData>([
 	],
 ]);
 
-const LitiumStandarts: FC = () => {
+const LitiumStandarts: React.FC = () => {
 	const state = useSelectState({ initialValue: "CANMAT" });
 
 	return (
@@ -276,18 +276,18 @@ type ValidationItemProps = ValidationItem;
 const MOLAR_MASS_LI = 6.94; // г/моль для лития
 const VALENCE_LI = 1; // одновалентный ион
 
-const ValidationItem: FC<ValidationItemProps> = (props) => {
-	const ctx = useConverterPageContext();
+const ValidationItem: FC<ValidationItemProps> = observer((props) => {
+	const { $store } = useConverterPageContext();
 
 	let status: "ok" | "error" | "neutral" = "neutral";
 
 	// Преобразуем введенное значение в ммоль/л для корректного сравнения с диапазоном
 	let valueInMmol: number | null = null;
-	if (ctx.fromInputValue !== null && ctx.fromInputUnit) {
+	if (typeof $store.fromValue === "number" && $store.fromUnit) {
 		try {
 			valueInMmol = convertUnitToMmol({
-				unit: ctx.fromInputUnit,
-				value: ctx.fromInputValue,
+				unit: $store.fromUnit,
+				value: $store.fromValue,
 				molarMass: MOLAR_MASS_LI,
 				valence: VALENCE_LI,
 			});
@@ -388,6 +388,6 @@ const ValidationItem: FC<ValidationItemProps> = (props) => {
 			</Stack>
 		</List.Item>
 	);
-};
+});
 
 export default LitiumStandarts;
