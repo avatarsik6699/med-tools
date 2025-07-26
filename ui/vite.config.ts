@@ -11,4 +11,12 @@ export default defineConfig({
 			"@": path.resolve(__dirname, "./src"),
 		},
 	},
+	server: {
+		host: "0.0.0.0", // Позволяет доступ из внешней сети
+		port: 5173, // Стандартный порт Vite
+		strictPort: true, // Если порт занят, попробует следующий
+		hmr: {
+			clientPort: 5173,
+		},
+	},
 });

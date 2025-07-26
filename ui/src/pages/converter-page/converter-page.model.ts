@@ -1,6 +1,10 @@
 import type { NumberInputProps } from "@mantine/core";
 import { makeAutoObservable, runInAction } from "mobx";
-import { BASE_SUBSTANCES } from "./model/substances.model";
+import {
+	BASE_SUBSTANCES,
+	type Substance,
+	type ValidationItem,
+} from "./model/substances.model";
 import {
 	BASE_UNITS_LIST,
 	convertUnit,
@@ -8,6 +12,7 @@ import {
 } from "./model/units-convert.utils";
 
 type InputStateValue = NumberInputProps["value"];
+type StandardKey = string;
 
 export class ConverterModel {
 	selectedSubstanceId: string = "litium";
@@ -18,44 +23,130 @@ export class ConverterModel {
 	toUnit: Unit = BASE_UNITS_LIST[1].value;
 	toValue: InputStateValue = "";
 
+	// Стандарт, выбранный для текущего вещества
+	selectedStandardKey: StandardKey = "CANMAT";
+
 	constructor() {
 		makeAutoObservable(this);
+		// По умолчанию предполагаем, что нормы есть и ключ "CANMAT" всегда валиден
+		// this.initDefaultStandard(); // Не вызываем, т.к. дефолт всегда "CANMAT"
+	}
+
+	// Инициализация дефолтного стандарта при создании store или смене вещества
+	private initDefaultStandard() {
+		// По умолчанию всегда "CANMAT"
+		this.selectedStandardKey = "CANMAT";
 	}
 
 	// Геттеры
+	get substance(): Substance | undefined {
+		return BASE_SUBSTANCES.get(this.selectedSubstanceId);
+	}
+
 	get substanceMolarMass(): number {
-		return Number(BASE_SUBSTANCES.get(this.selectedSubstanceId)!.value);
+		return this.substance?.molarMass ?? 1;
+	}
+
+	get standardsList(): { value: string; label: string }[] {
+		const substance = this.substance;
+		if (!substance) return [];
+		return Array.from(substance.standards.values()).map((std) => ({
+			value: std.value,
+			label: std.label,
+		}));
+	}
+
+	get selectedStandard() {
+		const substance = this.substance;
+
+		if (!substance || !this.selectedStandardKey) return null;
+
+		return substance.standards.get(this.selectedStandardKey) ?? null;
+	}
+
+	get standardValidationItems(): ValidationItem[] {
+		return this.selectedStandard?.items ?? [];
+	}
+
+	get standardSource(): string | null {
+		return this.selectedStandard?.source ?? null;
 	}
 
 	// Действия
 	setSelectedSubstanceId = (id: string) => {
 		this.selectedSubstanceId = id;
-		// Пересчитываем значения при смене вещества
+		this.initDefaultStandard();
 		this.recalculateValues();
+	};
+
+	setSelectedStandardKey = (key: StandardKey) => {
+		this.selectedStandardKey = key;
 	};
 
 	setFromUnit = (unit: Unit) => {
 		this.fromUnit = unit;
-		// При смене единицы в левом поле пересчитываем правое поле
 		this.recalculateToValue();
 	};
 
 	setFromValue = (value: InputStateValue) => {
 		this.fromValue = value;
-		// При изменении значения в левом поле пересчитываем правое поле
 		this.recalculateToValue();
 	};
 
 	setToUnit = (unit: Unit) => {
 		this.toUnit = unit;
-		// При смене единицы в правом поле пересчитываем правое поле
 		this.recalculateToValue();
 	};
 
 	setToValue = (value: InputStateValue) => {
 		this.toValue = value;
-		// При изменении значения в правом поле пересчитываем левое поле
 		this.recalculateFromValue();
+	};
+
+	// Валидация значения по выбранному стандарту и конкретному диапазону (ValidationItem)
+	/**
+	 * Валидирует значение относительно конкретного диапазона (item).
+	 * Используется для покомпонентной проверки каждого диапазона при рендере.
+	 *
+	 * @param value - проверяемое значение
+	 * @param unit - единица измерения (по умолчанию fromUnit)
+	 * @param item - диапазон/стандарт для проверки (ValidationItem)
+	 * @returns статус валидации для данного диапазона
+	 */
+	validateValueAgainstStandardItem = (
+		value: number,
+		unit: Unit = this.fromUnit,
+		item?: ValidationItem,
+	): { status: "ok" | "error" | "neutral"; matchedItem?: ValidationItem } => {
+		if (!item || !item.range) return { status: "neutral" };
+
+		// Если значение не введено (NaN или пустое), возвращаем neutral
+		if (typeof value !== "number" || isNaN(value)) {
+			return { status: "neutral" };
+		}
+
+		// Приводим значение к ммоль/л для сравнения
+		const mmolValue = convertUnit({
+			molarMass: this.substanceMolarMass,
+			fromUnit: unit,
+			toUnit: "mmol_l",
+			value,
+		});
+
+		if ("min" in item.range && "max" in item.range) {
+			const { min, max } = item.range;
+			if (mmolValue >= min && mmolValue <= max) {
+				return { status: "ok", matchedItem: item };
+			}
+			return { status: "error", matchedItem: item };
+		} else if ("value" in item.range) {
+			if (mmolValue === item.range.value) {
+				return { status: "ok", matchedItem: item };
+			}
+			return { status: "error", matchedItem: item };
+		}
+
+		return { status: "neutral" };
 	};
 
 	// Приватные методы для пересчета
@@ -96,7 +187,6 @@ export class ConverterModel {
 	};
 
 	private recalculateValues = () => {
-		// При смене вещества пересчитываем все значения
 		if (typeof this.fromValue === "number") {
 			this.recalculateToValue();
 		} else if (typeof this.toValue === "number") {
@@ -108,6 +198,7 @@ export class ConverterModel {
 	reset = () => {
 		this.fromValue = "";
 		this.toValue = "";
+		this.initDefaultStandard();
 	};
 }
 

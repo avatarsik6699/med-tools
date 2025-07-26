@@ -9,8 +9,8 @@ import React from "react";
 import { BASE_UNITS_LIST } from "../model/units-convert.utils";
 
 type Props = {
-	select: SelectProps;
-	input: NumberInputProps;
+	select: Pick<SelectProps, "value" | "onChange">;
+	input: Pick<NumberInputProps, "value" | "onChange">;
 };
 
 const UnitField: React.FC<Props> = (props) => {

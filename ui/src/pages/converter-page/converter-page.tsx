@@ -46,17 +46,6 @@ const ConverterPage: React.FC = () => {
 					</Text>
 				</Stack>
 
-				{/* <ConverterPageProvider
-					value={{
-						fromInputUnit: state.from.select.value! as Unit,
-						fromInputValue:
-							// TODO: надо сделать более норм проверку
-							state.from.input.value === undefined ||
-							state.from.input.value === ""
-								? null
-								: (state.from.input.value as number),
-					}}
-				> */}
 				<Stack>
 					<LitiumStandarts />
 					<InfoSection
@@ -100,7 +89,6 @@ const ConverterPage: React.FC = () => {
 						</Text>
 					</InfoSection>
 				</Stack>
-				{/* </ConverterPageProvider> */}
 			</Container>
 		</ConverterPageProvider>
 	);
