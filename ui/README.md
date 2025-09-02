@@ -1,54 +1,143 @@
-# React + TypeScript + Vite
+Основные сущности
+Node - базовая единица с типизацией:
+type: "question" | "info" | "diagnostic" | "action" | "decision"
+state: "active" | "completed" | "skipped" | "blocked"
+metadata: дополнительные свойства в зависимости от типа
+Description - контент узла:
+Лучше сделать content с поддержкой разных типов (text, markdown, react component)
+Версионность для обновлений
+Edge/Transition - связь между узлами:
+condition: логическое условие перехода
+priority: порядок проверки условий
+type: "automatic" | "manual" | "conditional"
+Что можете упускать
+Контекст pathway - глобальные переменные/состояние для всего пути
+Группировка узлов - возможность создавать подграфы/секции
+Валидация - правила корректности pathway (нет циклов, есть начало/конец)
+Пользовательский прогресс - отдельная сущность для отслеживания прохождения
+Шаблоны узлов - готовые типы для быстрого создания
+Рассмотрите паттерн State Machine для управления переходами - это добавит структурированности.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# pathways
+medical_groups Медицинские группы (Anesthesiology, Cardiovascular Medicine, etc.)
+pathways (например, "Diabetes: Diagnosis of diabetes mellitus")
 
-Currently, two official plugins are available:
+Узлы с типами:
+- Вопросы с вариантами ответов
+- Информационные блоки
+- Диагностические критерии
+- Действия/рекомендации
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Node: {
+  label: string | ReactNode,
+  focus: boolean
+}
 
-## Expanding the ESLint configuration
+Condition: {
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+}
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+Description: {
+  
+}
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Node (описание, состояния) 
+-> Edge(условие перехода) 
+-> Node (описание, состояния)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+model Pathway {
+  id String @id @default(cuid())
+  title String
+  medicalGroup String
+  nodes Node[]
+  edges Edge[]
+  context Json? // глобальные переменные
+}
+
+model Node {
+  id String @id @default(cuid())
+  type NodeType
+  position Json // {x, y}
+  state NodeState @default(INACTIVE)
+  metadata Json?
+  
+  pathway Pathway @relation(fields: [pathwayId], references: [id])
+  pathwayId String
+  
+  content NodeContent?
+  sourceEdges Edge[] @relation("SourceNode")
+  targetEdges Edge[] @relation("TargetNode")
+}
+
+model NodeContent {
+  id String @id @default(cuid())
+  contentType ContentType
+  data Json // text, markdown, или component config
+  version Int @default(1)
+  
+  node Node @relation(fields: [nodeId], references: [id])
+  nodeId String @unique
+}
+
+model UserProgress {
+  id String @id
+  pathwayId String
+  userId String
+  currentNodeId String
+  answers Json // {"nodeA": "yes", "nodeC": "option1"}
+  completedAt DateTime?
+}
+
+
+На бекенд передавать:
+
+{
+  "nodeId": "A",
+  "answer": "yes",
+  "pathwayId": "pathway123"
+}
+
+model Edge {
+  id String @id @default(cuid())
+  condition Json? // логические условия
+  priority Int @default(0)
+  type EdgeType @default(MANUAL)
+  
+  sourceNode Node @relation("SourceNode", fields: [sourceId], references: [id])
+  sourceId String
+  targetNode Node @relation("TargetNode", fields: [targetId], references: [id])
+  targetId String
+  
+  pathway Pathway @relation(fields: [pathwayId], references: [id])
+  pathwayId String
+}
+
+
+Спецификация Pathway System
+Основные сущности
+Pathway
+id, title, medicalGroup
+context (Json) - глобальные переменные
+Связь: nodes[], edges[]
+Node
+id, type (question/info/action/diagnostic), role (START/INTERMEDIATE/END)
+position (Json), state (active/completed/skipped/blocked)
+metadata (Json) - дополнительные свойства по типу
+Связь: content, sourceEdges[], targetEdges[]
+NodeContent
+contentType (text/markdown/component), data (Json)
+version - для обновлений контента
+Edge
+condition (Json), priority, type (manual/automatic/conditional)
+Связь: sourceNode, targetNode
+Простые условия переходов
+Workflow создания
+Добавление узлов → выбор типа → заполнение label/content
+Создание связей → drag&drop между узлами → настройка условий
+Валидация → проверка START/END узлов
+Ограничения
+Минимум 1 START и 1 END узел
+START: только исходящие edges
+END: только входящие edges
+Приоритет edges для разрешения конфликтов

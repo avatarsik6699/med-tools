@@ -4,6 +4,6 @@ import { rootRoute } from "../root/route";
 
 export const converterRoute = createRoute({
 	getParentRoute: () => rootRoute,
-	path: "/",
+	path: "/converter",
 	component: ConverterPage,
 });

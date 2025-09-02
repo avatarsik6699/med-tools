@@ -10,13 +10,6 @@ import Header from "./components/header";
 import NavBar from "./components/nav-bar/nav-bar";
 import { overrideTheme } from "./theme";
 
-// Инициализация eruda для мобильного дебага в режиме разработки
-if (import.meta.env.DEV) {
-	import("eruda").then((eruda) => {
-		eruda.default.init();
-	});
-}
-
 const App: FC = () => {
 	const [isMobileOpen, { toggle: toggleMobile }] = useDisclosure();
 	const [isDesktopOpen, { toggle: toggleDesktop }] = useDisclosure(true);

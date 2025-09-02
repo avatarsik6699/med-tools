@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Pathway {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  nodes Node[]
+  edges Edge[]
+
+  @@map("pathways")
+}
+
+model Edge {
+  id        String @id @default(uuid())
+  condition String
+
+  pathwayId String
+  pathway   Pathway @relation(fields: [pathwayId], references: [id])
+
+  fromNodeId String
+  fromNode   Node   @relation("FromNode", fields: [fromNodeId], references: [id], onDelete: Cascade)
+
+  toNodeId String
+  toNode   Node   @relation("ToNode", fields: [toNodeId], references: [id], onDelete: Cascade)
+
+  @@map("edges")
+}
+
+model Node {
+  id    String @id @default(uuid())
+  label String
+
+  pathwayId String
+  pathway   Pathway @relation(fields: [pathwayId], references: [id])
+
+	outgoingEdges Edge[] @relation("FromNode")
+  incomingEdges Edge[] @relation("ToNode")
+
+  @@map("nodes")
+}

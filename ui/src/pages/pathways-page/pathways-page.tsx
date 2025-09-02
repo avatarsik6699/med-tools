@@ -1,18 +1,20 @@
-import { useCallback, type FC } from "react";
 import {
-	ReactFlow,
-	MiniMap,
-	Controls,
-	Background,
-	useNodesState,
-	useEdgesState,
 	addEdge,
+	applyEdgeChanges,
+	applyNodeChanges,
+	Background,
 	BackgroundVariant,
+	Controls,
 	Handle,
+	MiniMap,
+	Panel,
 	Position,
+	ReactFlow,
 } from "@xyflow/react";
+import { useCallback, useState, type FC } from "react";
 
 import "@xyflow/react/dist/style.css";
+import { Button, Flex } from "@mantine/core";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function TextUpdaterNode(props: any) {
@@ -45,51 +47,83 @@ function TextUpdaterNode(props: any) {
 const initialNodes = [
 	{
 		id: "1",
-		type: "textUpdater",
-		position: { x: 0, y: 0 },
-		data: { label: "1", value: 123 },
+		// type: "textUpdater",
+		type: "input",
+		position: { x: 50, y: 200 },
+		data: { label: <div style={{ color: "red" }}>123</div>, value: 123 },
 	},
-	{ id: "2", position: { x: 0, y: 100 }, data: { label: "2", value: 345 } },
+	{ id: "2", position: { x: 0, y: 350 }, data: { label: "2", value: 345 } },
 ];
 
 const initialEdges = [
-	{
-		id: "e1-2",
-		source: "1",
-		target: "2",
-		sourceHandle: "1-source-right", // Указываем конкретный handle
-		// targetHandle: "2-target-left",
-	},
+	// {
+	// 	id: "1-2",
+	// 	source: "1",
+	// 	target: "2",
+	// 	type: "step",
+	// 	label: "connects with",
+	// 	// sourceHandle: "", // Указываем конкретный handle
+	// 	// targetHandle: "2-target-left",
+	// },
 ];
 
 const nodeTypes = { textUpdater: TextUpdaterNode };
 
 const PathwaysPage: FC = () => {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [nodes, _, onNodesChange] = useNodesState(initialNodes);
-	const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+	const [nodes, setNodes] = useState(initialNodes);
+	const [edges, setEdges] = useState(initialEdges);
 
-	const onConnect = useCallback(
-		(params: unknown) => setEdges((eds) => addEdge(params as never, eds)),
-		[setEdges],
-	);
+	const addNode = () => {
+		const newNode = {
+			id: `${nodes.length + 1}`,
+			type: "input",
+			position: { x: Math.random() * 300, y: Math.random() * 300 },
+			data: { label: `Node ${nodes.length + 1}` },
+		};
+		setNodes((nds) => [...nds, newNode]);
+	};
+
+	const deleteSelectedNodes = () => {
+		setNodes((nds) => nds.filter((node) => !node.selected));
+	};
+
+	console.log(nodes)
 
 	return (
-		<div style={{ width: "100%", height: "87.5vh" }}>
-			<ReactFlow
-				nodes={nodes}
-				edges={edges}
-				nodeTypes={nodeTypes}
-				onNodesChange={onNodesChange}
-				onEdgesChange={onEdgesChange}
-				onConnect={onConnect}
-				fitView
-			>
-				<Controls />
-				<MiniMap />
-				<Background variant={BackgroundVariant.Dots} gap={12} size={1} />
-			</ReactFlow>
-		</div>
+		<>
+			<div style={{ width: "100%", height: "87.5vh" }}>
+				<ReactFlow
+					nodes={nodes}
+					edges={edges}
+					// nodeTypes={nodeTypes}
+					onNodesChange={(changes) =>
+						setNodes((nodesSnapshot) =>
+							applyNodeChanges(changes, nodesSnapshot),
+						)
+					}
+					onEdgesChange={(changes) =>
+						setEdges((edgesSnapshot) =>
+							applyEdgeChanges(changes, edgesSnapshot),
+						)
+					}
+					onConnect={(params) =>
+						setEdges((edgesSnapshot) => addEdge(params, edgesSnapshot))
+					}
+					// fitView
+				>
+					<Panel position="top-left">
+						<Flex gap="xs" w="420px">
+							<Button onClick={addNode}>Добавить узел</Button>
+							<Button onClick={deleteSelectedNodes}>Удалить выбранный</Button>
+						</Flex>
+					</Panel>
+
+					<Controls />
+					<MiniMap />
+					<Background variant={BackgroundVariant.Dots} gap={12} size={1} />
+				</ReactFlow>
+			</div>
+		</>
 	);
 };
 
