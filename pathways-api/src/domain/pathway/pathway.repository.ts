@@ -1,7 +1,7 @@
 import { Repository } from "../../core/interfaces.js";
 import { PaginationService } from "../../core/services/pagination/pagination.service.js";
 import { PaginationTypes } from "../../core/services/pagination/pagination.types.js";
-import { Pathway, PrismaClient } from "../../generated/prisma/index.js";
+import { Pathway, Prisma, PrismaClient } from "../../generated/prisma/index.js";
 import { PathwayDto } from "./pathway.schemas.js";
 
 export class PathwayRepository
@@ -47,8 +47,18 @@ export class PathwayRepository
 		});
 	}
 
-	async findOneById(args: Pick<Pathway, "id">): Promise<Pathway | null> {
-		return this.client.pathway.findUnique({ where: { id: args.id } });
+	async findOneById(
+		args: Pick<Pathway, "id">,
+	): Promise<Prisma.PathwayGetPayload<{
+		include: { nodes: true; edges: true };
+	}> | null> {
+		return this.client.pathway.findUnique({
+			where: { id: args.id },
+			include: {
+				nodes: true,
+				edges: true,
+			},
+		});
 	}
 
 	async remove(args: Pick<Pathway, "id">): Promise<Pathway> {
