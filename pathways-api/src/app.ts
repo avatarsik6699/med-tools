@@ -15,10 +15,18 @@ import {
 	withRequestId,
 	withRequestLogger,
 } from "./core/middlewares/index.js";
+import { EdgeHandler } from "./domain/edge/edge.handler.js";
+import { EdgeRepository } from "./domain/edge/edge.repository.js";
+import { EdgeService } from "./domain/edge/edge.service.js";
+import { NodeHandler } from "./domain/node/node.handler.js";
+import { NodeRepository } from "./domain/node/node.repository.js";
+import { NodeService } from "./domain/node/node.service.js";
 
 const env = new EnvConfigService();
 const logger = new LoggerService(env);
-const client = new PrismaClient();
+const client = new PrismaClient({
+	log: ['query', 'info', 'warn', 'error'],
+});
 const app = new Koa();
 const router = new Router({
 	prefix: "/api",
@@ -28,6 +36,16 @@ router
 	.use(new HealthHandler().getRouter().routes())
 	.use(
 		new PathwayHandler(new PathwayService(new PathwayRepository(client)))
+			.getRouter()
+			.routes(),
+	)
+	.use(
+		new NodeHandler(new NodeService(new NodeRepository(client)))
+			.getRouter()
+			.routes(),
+	)
+	.use(
+		new EdgeHandler(new EdgeService(new EdgeRepository(client)))
 			.getRouter()
 			.routes(),
 	);
