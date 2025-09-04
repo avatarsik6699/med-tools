@@ -1,0 +1,45 @@
+#!/usr/bin/env sh
+
+RED='\033[0;31m'
+NC='\033[0m'
+echo "${RED}Запускаю pre-commit проверки!${NC}"
+
+# Собираем только staged файлы, которые реально существуют (исключая удалённые)
+STAGED_FILES=$(
+  git diff --cached --name-only --diff-filter=ACM \
+    | grep -E '^(src/|frontend/eslint\.config\.js|frontend/package\.json|frontend/tsconfig\.json)' \
+    | grep -vE '^(node_modules/|frontend/node_modules/|dist/|build/|coverage/|\.|frontend/\.|src/\.|public/)' \
+    | xargs -r ls 2>/dev/null \
+    || true
+)
+
+if [ -z "$STAGED_FILES" ]; then
+  echo "Нет изменённых файлов для проверки."
+  exit 0
+fi
+
+echo "Проверяю staged файлы:"
+echo "$STAGED_FILES"
+
+# Проверка типов: если есть TS/TSX-файлы, проверяем весь проект (иначе возможны ошибки из-за зависимостей)
+TS_FILES=$(echo "$STAGED_FILES" | grep -E '\.tsx?$' || true)
+if [ -n "$TS_FILES" ]; then
+  echo "Обнаружены изменённые TypeScript-файлы, запускаю полную проверку типов..."
+  npm run type-check -- --noEmit
+else
+  echo "Нет изменённых TypeScript файлов для проверки типов."
+fi
+
+# Линтинг только изменённых файлов, если они существуют
+LINTABLE_FILES=$(echo "$STAGED_FILES" | grep -E '\.(js|jsx|ts|tsx)$' || true)
+if [ -n "$LINTABLE_FILES" ]; then
+  echo "$LINTABLE_FILES" | xargs -r npm run lint -- --quiet --max-warnings=1000
+else
+  echo "Нет файлов для линтинга."
+fi
+
+# В будущем можно добавить stylelint и другие проверки
+# CSS_FILES=$(echo "$STAGED_FILES" | grep '\.css$' || true)
+# if [ -n "$CSS_FILES" ]; then
+#   echo "$CSS_FILES" | xargs -r npm run stylelint --
+# fi
